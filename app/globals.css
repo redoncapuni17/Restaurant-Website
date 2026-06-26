@@ -39,11 +39,18 @@ body {
   border-radius: 3px;
 }
 
-/* ResDiary widget override - minimize jeshilja */
+/* ResDiary widget — kornizë e pastër, pa shtrembërim ngjyrash */
 #rd-widget-frame {
-  max-width: 600px;
+  max-width: 640px;
   margin: 0 auto;
-  filter: hue-rotate(30deg) saturate(0.7);
+}
+
+#rd-widget-frame iframe {
+  width: 100% !important;
+  border: none;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.35);
 }
 
 /* Loading skeleton animation */

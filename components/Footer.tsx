@@ -1,14 +1,42 @@
-import Link from "next/link";
-import { Instagram, Twitter, Facebook, MapPin, Phone, Mail, Clock } from "lucide-react";
+"use client";
 
-const hours = [
-  { day: "Monday & Wednesday", time: "17:00 – 22:00" },
-  { day: "Tuesday", time: "CLOSED" },
-  { day: "Thursday – Saturday", time: "12:00 – 22:00" },
-  { day: "Sunday", time: "13:30 – 22:00" },
-];
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Instagram, Twitter, Facebook, MapPin, Phone, Mail } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import type { OpeningHours } from "@/types";
+
+const DAYS_ORDER = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+interface HourRow {
+  day: string;
+  time: string;
+  closed: boolean;
+}
+
+function formatHours(hours: OpeningHours[]): HourRow[] {
+  return DAYS_ORDER.map((day) => {
+    const h = hours.find((row) => row.day === day);
+    if (!h) return { day, time: "", closed: false };
+    return {
+      day,
+      time: h.is_closed ? "CLOSED" : `${h.open_time ?? ""} – ${h.close_time ?? ""}`,
+      closed: h.is_closed,
+    };
+  });
+}
 
 export default function Footer() {
+  const [rows, setRows] = useState<HourRow[]>([]);
+
+  useEffect(() => {
+    const fetchHours = async () => {
+      const { data } = await supabase.from("opening_hours").select("*");
+      if (data && data.length) setRows(formatHours(data));
+    };
+    fetchHours();
+  }, []);
+
   return (
     <footer className="bg-pupa-brown text-pupa-warm">
       <div className="max-w-7xl mx-auto px-6 py-16">
@@ -62,15 +90,15 @@ export default function Footer() {
             </Link>
           </div>
 
-          {/* Opening Hours */}
+          {/* Opening Hours - nga konfigurimi i adminit */}
           <div>
             <h4 className="font-serif text-pupa-cream text-lg mb-6">Opening Hours</h4>
             <div className="space-y-2.5 font-sans text-sm">
-              {hours.map(({ day, time }) => (
+              {rows.map(({ day, time, closed }) => (
                 <div key={day} className="flex justify-between gap-4">
                   <span className="text-pupa-warm/70">{day}</span>
-                  <span className={time === "CLOSED" ? "text-red-400" : "text-pupa-gold"}>
-                    {time}
+                  <span className={closed ? "text-red-400" : "text-pupa-gold"}>
+                    {closed ? "CLOSED" : time}
                   </span>
                 </div>
               ))}

@@ -2,10 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { Upload, Trash2, ArrowLeft, Loader2 } from "lucide-react";
-import Link from "next/link";
+import { Upload, Trash2, Loader2 } from "lucide-react";
 import Image from "next/image";
 
 interface GalleryImage {
@@ -19,16 +16,10 @@ export default function AdminGallery() {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
-    const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) router.push("/admin/login");
-      else fetchImages();
-    };
-    checkUser();
-  }, [router]);
+    fetchImages();
+  }, []);
 
   const fetchImages = async () => {
     const { data } = await supabase
@@ -75,90 +66,65 @@ export default function AdminGallery() {
   };
 
   return (
-    <div className="min-h-screen bg-pupa-beige">
-      <nav className="bg-pupa-brown px-6 py-4 flex items-center gap-4">
-        <Link href="/admin/dashboard" className="text-pupa-warm hover:text-pupa-gold">
-          <ArrowLeft size={20} />
-        </Link>
-        <h1 className="font-serif text-pupa-cream text-lg">Gallery Management</h1>
-      </nav>
+    <div className="max-w-5xl mx-auto px-6 py-8">
+      <h1 className="font-serif text-2xl text-pupa-brown mb-6">Gallery Management</h1>
 
-      <div className="max-w-5xl mx-auto px-6 py-10">
-        {/* Upload Zone */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-10"
-        >
-          <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-pupa-gold/40 hover:border-pupa-gold cursor-pointer bg-white transition-colors duration-300 group">
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              className="hidden"
-              onChange={handleUpload}
-              disabled={uploading}
-            />
-            {uploading ? (
-              <div className="flex flex-col items-center gap-3">
-                <Loader2 size={32} className="text-pupa-gold animate-spin" />
-                <span className="font-sans text-sm text-pupa-brown/60">Uploading...</span>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center gap-3">
-                <Upload size={32} className="text-pupa-gold/50 group-hover:text-pupa-gold transition-colors" />
-                <span className="font-sans text-sm text-pupa-brown/60">
-                  Click to upload images or drag and drop
-                </span>
-                <span className="font-sans text-xs text-pupa-brown/40">PNG, JPG, WEBP</span>
-              </div>
-            )}
-          </label>
-        </motion.div>
-
-        {/* Images Grid */}
-        {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="aspect-square skeleton rounded" />
-            ))}
-          </div>
-        ) : images.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="font-sans text-pupa-brown/40">No images yet. Upload your first image above.</p>
+      {/* Upload Zone — shfaqet menjëherë */}
+      <label className="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-pupa-gold/40 hover:border-pupa-gold cursor-pointer bg-white transition-colors mb-8 group">
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          className="hidden"
+          onChange={handleUpload}
+          disabled={uploading}
+        />
+        {uploading ? (
+          <div className="flex flex-col items-center gap-2">
+            <Loader2 size={28} className="text-pupa-gold animate-spin" />
+            <span className="font-sans text-sm text-pupa-brown/60">Uploading...</span>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {images.map((img, i) => (
-              <motion.div
-                key={img.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.05 }}
-                className="relative aspect-square group overflow-hidden bg-pupa-warm"
-              >
-                <Image
-                  src={img.url}
-                  alt={img.alt}
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-pupa-dark/0 group-hover:bg-pupa-dark/50 transition-all duration-300 flex items-center justify-center">
-                  <button
-                    onClick={() => handleDelete(img.id, img.url)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity bg-red-500 text-white p-2 rounded hover:bg-red-600"
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 bg-pupa-dark/60 px-3 py-1.5 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                  <p className="font-sans text-pupa-cream text-xs truncate">{img.alt}</p>
-                </div>
-              </motion.div>
-            ))}
+          <div className="flex flex-col items-center gap-2">
+            <Upload size={28} className="text-pupa-gold/50 group-hover:text-pupa-gold transition-colors" />
+            <span className="font-sans text-sm text-pupa-brown/60">
+              Click to upload images
+            </span>
           </div>
         )}
-      </div>
+      </label>
+
+      {/* Grid */}
+      {loading ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="aspect-square skeleton rounded" />
+          ))}
+        </div>
+      ) : images.length === 0 ? (
+        <p className="text-center py-16 font-sans text-pupa-brown/40">
+          No images yet. Upload your first image above.
+        </p>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {images.map((img) => (
+            <div
+              key={img.id}
+              className="relative aspect-square group overflow-hidden bg-pupa-warm"
+            >
+              <Image src={img.url} alt={img.alt} fill className="object-cover" sizes="200px" />
+              <div className="absolute inset-0 bg-pupa-dark/0 group-hover:bg-pupa-dark/50 transition-colors flex items-center justify-center">
+                <button
+                  onClick={() => handleDelete(img.id, img.url)}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity bg-red-500 text-white p-2 rounded hover:bg-red-600"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,11 +1,26 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 
 export default function Hero() {
   const bgRef = useRef<HTMLDivElement>(null);
+  const [bgUrl, setBgUrl] = useState<string | null>(null);
+
+  // Merr foton e sfondit nga admini (Supabase)
+  useEffect(() => {
+    const fetchHero = async () => {
+      const { data } = await supabase
+        .from("site_images")
+        .select("url")
+        .eq("key", "hero")
+        .maybeSingle();
+      if (data?.url) setBgUrl(data.url);
+    };
+    fetchHero();
+  }, []);
 
   // Parallax efekt
   useEffect(() => {
@@ -21,15 +36,19 @@ export default function Hero() {
 
   return (
     <section className="relative h-[90vh] min-h-[600px] overflow-hidden">
-      {/* Background Image me Parallax */}
+      {/* Background: foto nga admini, ose gradient si fallback */}
       <div
         ref={bgRef}
-        className="absolute inset-0 scale-110 parallax-img"
-        style={{
-          backgroundImage: `url('https://images.squarespace-cdn.com/content/v1/63750e9f0d23390c9402c839/74b2cf5f-39bf-474b-a9bb-e7231a1bc82f/IMG_9196.jpg')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center 35%",
-        }}
+        className="absolute inset-0 scale-110 parallax-img bg-gradient-to-br from-pupa-dark via-pupa-brown to-pupa-dark"
+        style={
+          bgUrl
+            ? {
+                backgroundImage: `url('${bgUrl}')`,
+                backgroundSize: "cover",
+                backgroundPosition: "center 35%",
+              }
+            : undefined
+        }
       />
 
       {/* Gradient Overlay - e ngrohtë dhe elegante */}

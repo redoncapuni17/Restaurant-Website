@@ -2,6 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { CalendarCheck, Clock, ShieldCheck, Phone } from "lucide-react";
+
+const TRUST_BADGES = [
+  { icon: CalendarCheck, label: "Real-time availability" },
+  { icon: Clock, label: "Instant confirmation" },
+  { icon: ShieldCheck, label: "Secure booking" },
+];
 
 export default function BookingWidget() {
   const [isVisible, setIsVisible] = useState(false);
@@ -93,55 +100,84 @@ export default function BookingWidget() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="bg-pupa-beige/5 border border-pupa-gold/20 p-6 md:p-10"
+          className="relative rounded-2xl overflow-hidden border border-pupa-gold/25 bg-gradient-to-b from-pupa-beige/10 to-pupa-dark/20 shadow-2xl shadow-black/30 backdrop-blur-sm"
         >
-          {/* Loading Placeholder — shfaqet derisa widget-i ngarkohet */}
-          {!isLoaded && (
-            <div className="flex flex-col items-center justify-center py-16 gap-6">
-              {/* Animacion elegant me ngjyrat e restorantit */}
-              <div className="relative w-16 h-16">
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                  className="absolute inset-0 border-2 border-transparent border-t-pupa-gold rounded-full"
-                />
-                <motion.div
-                  animate={{ rotate: -360 }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                  className="absolute inset-2 border-2 border-transparent border-t-pupa-cream/50 rounded-full"
-                />
-                {/* Ikona në mes */}
-                <div className="absolute inset-0 flex items-center justify-center text-pupa-gold text-xl">
-                  🍽
-                </div>
-              </div>
+          {/* Vija e artë sipër kartës */}
+          <div className="h-1 w-full bg-gradient-to-r from-transparent via-pupa-gold to-transparent" />
 
-              {/* Skeleton cards */}
-              <div className="w-full max-w-sm space-y-3">
-                <div className="skeleton h-10 w-full rounded" />
-                <div className="flex gap-3">
-                  <div className="skeleton h-10 flex-1 rounded" />
-                  <div className="skeleton h-10 flex-1 rounded" />
-                </div>
-                <div className="skeleton h-32 w-full rounded" />
-                <div className="skeleton h-10 w-32 rounded mx-auto" />
+          {/* Trust badges */}
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 px-6 pt-7">
+            {TRUST_BADGES.map(({ icon: Icon, label }) => (
+              <div key={label} className="flex items-center gap-2 text-pupa-warm/80">
+                <Icon size={16} className="text-pupa-gold" />
+                <span className="font-sans text-xs tracking-wide">{label}</span>
               </div>
+            ))}
+          </div>
 
-              <p className="font-sans text-pupa-warm text-xs tracking-wider animate-pulse">
-                Loading reservation system...
-              </p>
+          <div className="px-4 py-7 md:px-10 md:py-9">
+            {/* Loading Placeholder — shfaqet derisa widget-i ngarkohet */}
+            {!isLoaded && (
+              <div className="flex flex-col items-center justify-center py-16 gap-6">
+                {/* Animacion elegant me ngjyrat e restorantit */}
+                <div className="relative w-16 h-16">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-0 border-2 border-transparent border-t-pupa-gold rounded-full"
+                  />
+                  <motion.div
+                    animate={{ rotate: -360 }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-2 border-2 border-transparent border-t-pupa-cream/50 rounded-full"
+                  />
+                  {/* Ikona në mes */}
+                  <div className="absolute inset-0 flex items-center justify-center text-pupa-gold text-xl">
+                    🍽
+                  </div>
+                </div>
+
+                {/* Skeleton cards */}
+                <div className="w-full max-w-sm space-y-3">
+                  <div className="skeleton h-10 w-full rounded-lg" />
+                  <div className="flex gap-3">
+                    <div className="skeleton h-10 flex-1 rounded-lg" />
+                    <div className="skeleton h-10 flex-1 rounded-lg" />
+                  </div>
+                  <div className="skeleton h-32 w-full rounded-lg" />
+                  <div className="skeleton h-10 w-32 rounded-lg mx-auto" />
+                </div>
+
+                <p className="font-sans text-pupa-warm text-xs tracking-wider animate-pulse">
+                  Loading reservation system...
+                </p>
+              </div>
+            )}
+
+            {/* ResDiary Widget */}
+            <div className={isLoaded ? "block" : "hidden"}>
+              <div id="rd-widget-frame" />
+              <input
+                id="rdwidgeturl"
+                name="rdwidgeturl"
+                type="hidden"
+                defaultValue=""
+              />
             </div>
-          )}
+          </div>
 
-          {/* ResDiary Widget */}
-          <div className={isLoaded ? "block" : "hidden"}>
-            <div id="rd-widget-frame" />
-            <input
-              id="rdwidgeturl"
-              name="rdwidgeturl"
-              type="hidden"
-              defaultValue=""
-            />
+          {/* Footer i kartës */}
+          <div className="border-t border-pupa-gold/15 bg-pupa-dark/30 px-6 py-4 flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-2 text-center">
+            <span className="font-sans text-pupa-warm/50 text-xs">
+              Powered by ResDiary — secure online booking
+            </span>
+            <a
+              href="tel:01614004830"
+              className="inline-flex items-center gap-2 font-sans text-xs text-pupa-gold hover:text-pupa-cream transition-colors"
+            >
+              <Phone size={14} />
+              Need help? Call 0161 400 4830
+            </a>
           </div>
         </motion.div>
       </div>

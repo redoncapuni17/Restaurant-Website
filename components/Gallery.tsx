@@ -1,29 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
-// Fotot ekzistuese nga Squarespace
-const defaultImages = [
-  { url: "https://images.squarespace-cdn.com/content/v1/63750e9f0d23390c9402c839/0e9f73aa-e508-4e6d-b328-c5281a5ae85e/Pupa+Steak+-+001.jpg", alt: "Pupa Steak" },
-  { url: "https://images.squarespace-cdn.com/content/v1/63750e9f0d23390c9402c839/175f7e12-a103-4c64-b696-d90bf510ea99/Pupa+Steak+-+016.jpg", alt: "Grilled Steak" },
-  { url: "https://images.squarespace-cdn.com/content/v1/63750e9f0d23390c9402c839/163c455a-9d60-4c6a-ad94-cf540bf8f1e8/IMG_7003.jpg", alt: "Restaurant Interior" },
-  { url: "https://images.squarespace-cdn.com/content/v1/63750e9f0d23390c9402c839/71d4d9aa-5dab-41c1-87ed-99ced3cb04a7/Pupa+-+002.jpg", alt: "Pupa Restaurant" },
-  { url: "https://images.squarespace-cdn.com/content/v1/63750e9f0d23390c9402c839/49fdae99-a36f-4616-bbca-cf5b5e4d36ac/Pupa+-+018.jpg", alt: "Pupa Bar" },
-  { url: "https://images.squarespace-cdn.com/content/v1/63750e9f0d23390c9402c839/536722fe-d0db-41ca-9651-dfab62b90a48/Burger+Picture.jpg", alt: "Burger" },
-];
-
-interface GalleryProps {
-  images?: { url: string; alt: string }[];
+interface GalleryImage {
+  url: string;
+  alt: string;
 }
 
-export default function Gallery({ images = defaultImages }: GalleryProps) {
+export default function Gallery() {
+  const [images, setImages] = useState<GalleryImage[]>([]);
+  const [loading, setLoading] = useState(true);
   const [lightbox, setLightbox] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      const { data } = await supabase
+        .from("gallery_images")
+        .select("url, alt")
+        .order("order");
+      if (data) setImages(data);
+      setLoading(false);
+    };
+    fetchImages();
+  }, []);
 
   const prev = () => setLightbox((i) => (i! - 1 + images.length) % images.length);
   const next = () => setLightbox((i) => (i! + 1) % images.length);
+
+  // Nuk shfaqim asgjë derisa të ngarkohen, dhe as kur s'ka foto nga admini
+  if (loading || images.length === 0) return null;
 
   return (
     <section className="py-24 bg-pupa-beige">
