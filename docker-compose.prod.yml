@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  # ─────────────────────────────────────────
+  # Next.js App (Production Build)
+  # ─────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pupa-app-prod
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.local
+    environment:
+      - NODE_ENV=production
+    networks:
+      - pupa-network
+    restart: always
+
+  # ─────────────────────────────────────────
+  # Nginx Reverse Proxy
+  # ─────────────────────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: pupa-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
+    networks:
+      - pupa-network
+    restart: always
+
+networks:
+  pupa-network:
+    driver: bridge

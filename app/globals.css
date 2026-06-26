@@ -1,0 +1,76 @@
+@import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --pupa-cream: #f5c9a0;
+  --pupa-beige: #f0e6d3;
+  --pupa-brown: #3d2b1f;
+  --pupa-dark: #1a0f0a;
+  --pupa-gold: #c9a96e;
+  --pupa-warm: #e8d5b7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--pupa-beige);
+  color: var(--pupa-brown);
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--pupa-beige);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--pupa-gold);
+  border-radius: 3px;
+}
+
+/* ResDiary widget override - minimize jeshilja */
+#rd-widget-frame {
+  max-width: 600px;
+  margin: 0 auto;
+  filter: hue-rotate(30deg) saturate(0.7);
+}
+
+/* Loading skeleton animation */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #e8d5b7 25%,
+    #f0e6d3 50%,
+    #e8d5b7 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Parallax helper */
+.parallax-img {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
