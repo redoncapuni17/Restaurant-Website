@@ -1,5 +1,3 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import Link from "next/link";
 
 const menus = [
@@ -37,9 +35,7 @@ const menus = [
 
 export default function MenusPage() {
   return (
-    <main>
-      <Navbar />
-
+    <>
       {/* Hero */}
       <section className="relative h-64 overflow-hidden">
         <div
@@ -62,7 +58,7 @@ export default function MenusPage() {
       <section className="py-20 bg-pupa-beige">
         <div className="max-w-4xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {menus.map((menu, i) => (
+            {menus.map((menu) => (
               <Link
                 key={menu.title}
                 href={menu.href}
@@ -89,8 +85,6 @@ export default function MenusPage() {
           </p>
         </div>
       </section>
-
-      <Footer />
-    </main>
+    </>
   );
 }

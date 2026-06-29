@@ -1,16 +1,16 @@
-@import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap");
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --pupa-cream: #f5c9a0;
-  --pupa-beige: #f0e6d3;
-  --pupa-brown: #3d2b1f;
-  --pupa-dark: #1a0f0a;
-  --pupa-gold: #c9a96e;
-  --pupa-warm: #e8d5b7;
+  --pupa-cream: #f5f2ea;
+  --pupa-beige: #f1efe7;
+  --pupa-brown: #0f2c22;
+  --pupa-dark: #080b09;
+  --pupa-gold: #46a87f;
+  --pupa-warm: #aebcad;
+  --pupa-accent: #2c7a59;
+  --pupa-champagne: #d8c7a2;
 }
 
 * {
@@ -24,7 +24,15 @@ html {
 body {
   background-color: var(--pupa-beige);
   color: var(--pupa-brown);
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: var(--font-inter), "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Theksimi i tekstit në temën e brand-it */
+::selection {
+  background: var(--pupa-gold);
+  color: var(--pupa-dark);
 }
 
 /* Scrollbar styling */
@@ -39,27 +47,13 @@ body {
   border-radius: 3px;
 }
 
-/* ResDiary widget — kornizë e pastër, pa shtrembërim ngjyrash */
-#rd-widget-frame {
-  max-width: 640px;
-  margin: 0 auto;
-}
-
-#rd-widget-frame iframe {
-  width: 100% !important;
-  border: none;
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.35);
-}
-
 /* Loading skeleton animation */
 .skeleton {
   background: linear-gradient(
     90deg,
-    #e8d5b7 25%,
-    #f0e6d3 50%,
-    #e8d5b7 75%
+    #dfe3da 25%,
+    #f1efe7 50%,
+    #dfe3da 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
@@ -79,5 +73,48 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Tekst me gradient luksoz — smerald → champagne (për tituj premium) */
+  .text-gold-gradient {
+    background: linear-gradient(
+      120deg,
+      #2c7a59 0%,
+      #46a87f 26%,
+      #e6dcc0 50%,
+      #46a87f 74%,
+      #2c7a59 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* Teksturë "grain" delikate për thellësi sipër fotos */
+  .bg-grain {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+
+  /* Glow smerald radial */
+  .glow-gold {
+    background: radial-gradient(
+      circle at center,
+      rgba(70, 168, 127, 0.5) 0%,
+      rgba(70, 168, 127, 0.16) 35%,
+      transparent 70%
+    );
+  }
+}
+
+/* Respekto preferencat e përdoruesit për lëvizje të reduktuar */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }

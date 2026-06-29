@@ -1,7 +1,3 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import Link from "next/link";
-
 const features = [
   { icon: "🍽", title: "Exclusive Dining", desc: "The entire restaurant is yours for a truly private experience." },
   { icon: "🥩", title: "Bespoke Menu", desc: "Work with our chefs to create a custom Mediterranean menu." },
@@ -11,9 +7,7 @@ const features = [
 
 export default function PrivateHirePage() {
   return (
-    <main>
-      <Navbar />
-
+    <>
       {/* Hero */}
       <section className="relative h-[70vh] overflow-hidden">
         <div
@@ -88,8 +82,6 @@ export default function PrivateHirePage() {
           </div>
         </div>
       </section>
-
-      <Footer />
-    </main>
+    </>
   );
 }

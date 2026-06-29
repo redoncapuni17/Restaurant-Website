@@ -38,7 +38,7 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="bg-pupa-brown text-pupa-warm">
+    <footer className="bg-pupa-dark text-pupa-warm border-t border-pupa-gold/15">
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Contact */}
@@ -66,8 +66,8 @@ export default function Footer() {
 
           {/* Center - Logo & Social */}
           <div className="flex flex-col items-center text-center">
-            <h3 className="font-serif text-pupa-cream text-2xl mb-3">Pupa Restaurant</h3>
-            <p className="font-sans text-xs tracking-widest uppercase text-pupa-gold mb-6">
+            <h3 className="font-serif text-pupa-cream text-3xl font-semibold mb-3">Pupa Restaurant</h3>
+            <p className="font-sans text-xs tracking-widest uppercase text-pupa-champagne mb-6">
               Mediterranean Charcoal Grill
             </p>
             <div className="flex gap-5 mb-8">

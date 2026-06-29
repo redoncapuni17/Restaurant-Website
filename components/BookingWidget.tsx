@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { CalendarCheck, Clock, ShieldCheck, Phone } from "lucide-react";
+import { CalendarCheck, Clock, ShieldCheck } from "lucide-react";
 
 const TRUST_BADGES = [
   { icon: CalendarCheck, label: "Real-time availability" },
@@ -10,56 +10,28 @@ const TRUST_BADGES = [
   { icon: ShieldCheck, label: "Secure booking" },
 ];
 
+// URL-ja e widget-it të ResDiary. Është faqe e plotë HTML e pavarur, prandaj e
+// ngarkojmë në një <iframe>: widget-i ekzekutohet në dokumentin e vet (jQuery +
+// knockout + widget.js + window.onload) pa konfliktet e React/Next.js (SPA).
+const RESDIARY_WIDGET_URL =
+  "https://booking.resdiary.com/widget/Standard/PUPA/48467";
+
+// Widget-i vjen nga sistemi i ResDiary (iframe cross-origin), prandaj përmasat e
+// brendshme nuk i ndryshojmë dot nga jashtë. E zvogëlojmë gjithë widget-in
+// vizualisht me transform:scale dhe i japim lartësi të mjaftueshme (logjike) që
+// kalendari të shfaqet i plotë, PA scroll të brendshëm.
+const WIDGET_SCALE = 0.92; // sa i vogël (1 = përmasa origjinale)
+const WIDGET_LOGICAL_HEIGHT = 630; // px — lartësia e brendshme aq sa mbaron kalendari (pa bardhësi)
+
 export default function BookingWidget() {
-  const [isVisible, setIsVisible] = useState(false);
+  // Kalendari ngarkohet menjëherë kur hapet faqja (jo me scroll/klik), që të
+  // jetë gati. Mbajmë vetëm gjendjen e ngarkimit për overlay-in.
   const [isLoaded, setIsLoaded] = useState(false);
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  // Lazy loading — ngarkohet vetëm kur vizitori scrollon tek seksioni
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !isVisible) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.2 }
-    );
-
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, [isVisible]);
-
-  // Ngarko ResDiary script vetëm kur seksioni është visible
-  useEffect(() => {
-    if (!isVisible) return;
-
-    // Vendos URL-in e widget-it
-    const input = document.getElementById("rdwidgeturl") as HTMLInputElement;
-    if (input) {
-      input.value =
-        "https://booking.resdiary.com/widget/Standard/PUPA/48467?includeJquery=false";
-    }
-
-    // Ngarko script-in
-    const script = document.createElement("script");
-    script.src = "https://booking.resdiary.com/bundles/WidgetV2Loader.js";
-    script.async = true;
-    script.onload = () => {
-      setTimeout(() => setIsLoaded(true), 500);
-    };
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, [isVisible]);
 
   return (
     <section
       id="reservation"
-      ref={sectionRef}
-      className="py-24 bg-pupa-brown relative overflow-hidden"
+      className="py-24 bg-pupa-dark relative overflow-hidden"
     >
       {/* Dekoracion në background */}
       <div className="absolute inset-0 opacity-5">
@@ -67,119 +39,135 @@ export default function BookingWidget() {
         <div className="absolute bottom-0 right-0 w-96 h-96 border border-pupa-gold rounded-full translate-x-48 translate-y-48" />
       </div>
 
-      <div className="max-w-4xl mx-auto px-6 relative">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-12"
-        >
-          <p className="font-sans text-pupa-gold text-xs tracking-[0.4em] uppercase mb-4">
-            Book Your Experience
-          </p>
-          <h2 className="font-serif text-4xl md:text-5xl text-pupa-cream font-medium mb-4">
-            Make a Reservation
-          </h2>
-          <div className="w-16 h-px bg-pupa-gold mx-auto mb-6" />
-          <p className="font-sans text-pupa-warm text-sm">
-            Can&apos;t find a timeslot?{" "}
-            <a
-              href="tel:01614004830"
-              className="text-pupa-gold hover:underline"
-            >
-              Call us on 0161 400 4830
-            </a>
-          </p>
-        </motion.div>
+      <div className="max-w-6xl mx-auto px-6 relative">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+          {/* Kolona majtas — Teksti */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center lg:text-left"
+          >
+            <p className="font-sans text-pupa-gold text-xs tracking-[0.4em] uppercase mb-4">
+              Book Your Experience
+            </p>
+            <h2 className="font-serif text-5xl md:text-6xl text-pupa-cream font-semibold mb-4">
+              Make a Reservation
+            </h2>
+            <div className="w-16 h-px bg-pupa-gold mx-auto lg:mx-0 mb-6" />
+            <p className="font-sans text-pupa-warm text-sm max-w-md mx-auto lg:mx-0 mb-8">
+              Reserve your table in seconds. Real-time availability with instant
+              confirmation.
+            </p>
 
-        {/* Widget Container */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="relative rounded-2xl overflow-hidden border border-pupa-gold/25 bg-gradient-to-b from-pupa-beige/10 to-pupa-dark/20 shadow-2xl shadow-black/30 backdrop-blur-sm"
-        >
-          {/* Vija e artë sipër kartës */}
-          <div className="h-1 w-full bg-gradient-to-r from-transparent via-pupa-gold to-transparent" />
-
-          {/* Trust badges */}
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 px-6 pt-7">
-            {TRUST_BADGES.map(({ icon: Icon, label }) => (
-              <div key={label} className="flex items-center gap-2 text-pupa-warm/80">
-                <Icon size={16} className="text-pupa-gold" />
-                <span className="font-sans text-xs tracking-wide">{label}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="px-4 py-7 md:px-10 md:py-9">
-            {/* Loading Placeholder — shfaqet derisa widget-i ngarkohet */}
-            {!isLoaded && (
-              <div className="flex flex-col items-center justify-center py-16 gap-6">
-                {/* Animacion elegant me ngjyrat e restorantit */}
-                <div className="relative w-16 h-16">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0 border-2 border-transparent border-t-pupa-gold rounded-full"
-                  />
-                  <motion.div
-                    animate={{ rotate: -360 }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-2 border-2 border-transparent border-t-pupa-cream/50 rounded-full"
-                  />
-                  {/* Ikona në mes */}
-                  <div className="absolute inset-0 flex items-center justify-center text-pupa-gold text-xl">
-                    🍽
-                  </div>
+            {/* Trust badges */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-3 mb-8">
+              {TRUST_BADGES.map(({ icon: Icon, label }) => (
+                <div
+                  key={label}
+                  className="flex items-center gap-2 text-pupa-warm/80"
+                >
+                  <Icon size={16} className="text-pupa-gold" />
+                  <span className="font-sans text-xs tracking-wide">
+                    {label}
+                  </span>
                 </div>
-
-                {/* Skeleton cards */}
-                <div className="w-full max-w-sm space-y-3">
-                  <div className="skeleton h-10 w-full rounded-lg" />
-                  <div className="flex gap-3">
-                    <div className="skeleton h-10 flex-1 rounded-lg" />
-                    <div className="skeleton h-10 flex-1 rounded-lg" />
-                  </div>
-                  <div className="skeleton h-32 w-full rounded-lg" />
-                  <div className="skeleton h-10 w-32 rounded-lg mx-auto" />
-                </div>
-
-                <p className="font-sans text-pupa-warm text-xs tracking-wider animate-pulse">
-                  Loading reservation system...
-                </p>
-              </div>
-            )}
-
-            {/* ResDiary Widget */}
-            <div className={isLoaded ? "block" : "hidden"}>
-              <div id="rd-widget-frame" />
-              <input
-                id="rdwidgeturl"
-                name="rdwidgeturl"
-                type="hidden"
-                defaultValue=""
-              />
+              ))}
             </div>
-          </div>
 
-          {/* Footer i kartës */}
-          <div className="border-t border-pupa-gold/15 bg-pupa-dark/30 px-6 py-4 flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-2 text-center">
-            <span className="font-sans text-pupa-warm/50 text-xs">
-              Powered by ResDiary — secure online booking
-            </span>
-            <a
-              href="tel:01614004830"
-              className="inline-flex items-center gap-2 font-sans text-xs text-pupa-gold hover:text-pupa-cream transition-colors"
-            >
-              <Phone size={14} />
-              Need help? Call 0161 400 4830
-            </a>
-          </div>
-        </motion.div>
+            <p className="font-sans text-pupa-warm text-sm">
+              Can&apos;t find a timeslot?{" "}
+              <a
+                href="tel:01614004830"
+                className="text-pupa-gold hover:underline"
+              >
+                Call us on 0161 400 4830
+              </a>
+            </p>
+          </motion.div>
+
+          {/* Kolona djathtas — Karta e widget-it */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="relative w-full max-w-md mx-auto rounded-2xl overflow-hidden border border-pupa-gold/25 bg-gradient-to-b from-pupa-beige/10 to-pupa-dark/20 shadow-2xl shadow-black/30 backdrop-blur-sm"
+          >
+            {/* Vija e artë sipër kartës */}
+            <div className="h-1 w-full bg-gradient-to-r from-transparent via-pupa-gold to-transparent" />
+
+            <div className="relative p-2.5 md:p-3">
+              {/* Loading Placeholder — overlay sipër iframe-it derisa ngarkohet */}
+              {!isLoaded && (
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-6 bg-gradient-to-b from-pupa-beige/10 to-pupa-dark/20 backdrop-blur-sm">
+                  {/* Animacion elegant me ngjyrat e restorantit */}
+                  <div className="relative w-16 h-16">
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                      className="absolute inset-0 border-2 border-transparent border-t-pupa-gold rounded-full"
+                    />
+                    <motion.div
+                      animate={{ rotate: -360 }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
+                      className="absolute inset-2 border-2 border-transparent border-t-pupa-cream/50 rounded-full"
+                    />
+                    {/* Ikona në mes */}
+                    <div className="absolute inset-0 flex items-center justify-center text-pupa-gold text-xl">
+                      🍽
+                    </div>
+                  </div>
+
+                  <p className="font-sans text-pupa-warm text-xs tracking-wider animate-pulse">
+                    Loading reservation system...
+                  </p>
+                </div>
+              )}
+
+              {/* ResDiary Widget në iframe — ngarkohet vetëm kur seksioni bëhet visible.
+                E zvogëluar me transform:scale; wrapper-i e pret tepricën dhe e
+                cakton lartësinë vizuale = lartësia logjike * scale (pa scroll). */}
+              <div
+                className="overflow-hidden rounded-xl bg-white"
+                style={{
+                  height: `${Math.round(WIDGET_LOGICAL_HEIGHT * WIDGET_SCALE)}px`,
+                }}
+              >
+              <iframe
+                src={RESDIARY_WIDGET_URL}
+                title="Book a table at Pupa Restaurant & Bar"
+                onLoad={() => setIsLoaded(true)}
+                className="block"
+                style={{
+                  width: `${100 / WIDGET_SCALE}%`,
+                  height: `${WIDGET_LOGICAL_HEIGHT}px`,
+                  transform: `scale(${WIDGET_SCALE})`,
+                  transformOrigin: "top left",
+                  border: "0",
+                }}
+                loading="eager"
+              />
+              </div>
+            </div>
+
+            {/* Footer i kartës */}
+            <div className="border-t border-pupa-gold/15 bg-pupa-dark/30 px-6 py-4 flex items-center justify-center gap-2 text-center">
+              <span className="font-sans text-pupa-warm/50 text-xs">
+                Powered by ResDiary — secure online booking
+              </span>
+            </div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );

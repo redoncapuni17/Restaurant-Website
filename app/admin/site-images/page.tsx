@@ -17,6 +17,7 @@ const SLOTS: Slot[] = [
   { key: "about_1", label: "About — Foto 1", desc: "Foto kryesore vertikale (seksioni Our Story)" },
   { key: "about_2", label: "About — Foto 2", desc: "Foto e vogël katrore" },
   { key: "about_3", label: "About — Foto 3", desc: "Foto e vogël katrore" },
+  { key: "events", label: "Events — Hero", desc: "Foto e sfondit në krye të faqes Events (pa foto = sfond elegant)" },
 ];
 
 type ImageMap = Record<string, { url: string; alt: string }>;
@@ -99,10 +100,10 @@ export default function AdminSiteImages() {
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-8">
-      <h1 className="font-serif text-2xl text-pupa-brown mb-2">Homepage Images</h1>
+      <h1 className="font-serif text-2xl text-pupa-brown mb-2">Site Images</h1>
       <p className="font-sans text-pupa-brown/60 text-sm mb-8">
-        Këto foto shfaqen në faqen kryesore (Hero dhe seksioni Our Story). Nëse një
-        slot është bosh, ai përdor një fallback elegant pa foto.
+        Këto foto shfaqen në faqen kryesore (Hero dhe seksioni Our Story) dhe te
+        faqja Events. Nëse një slot është bosh, ai përdor një fallback elegant pa foto.
       </p>
 
         {loading ? (

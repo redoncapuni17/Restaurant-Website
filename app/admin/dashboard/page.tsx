@@ -3,7 +3,7 @@
 import Link from "next/link";
 import {
   UtensilsCrossed, Images, Calendar,
-  Clock, ImagePlus,
+  Clock, ImagePlus, Gift,
 } from "lucide-react";
 
 const menuItems = [
@@ -11,6 +11,7 @@ const menuItems = [
   { href: "/admin/menu", label: "Menu", icon: UtensilsCrossed, desc: "Menaxho pjatat dhe çmimet" },
   { href: "/admin/gallery", label: "Gallery", icon: Images, desc: "Ngarko dhe menaxho fotot" },
   { href: "/admin/events", label: "Events", icon: Calendar, desc: "Shto dhe ndrysho eventet" },
+  { href: "/admin/gift-cards", label: "Gift Cards", icon: Gift, desc: "Konfiguro tekstet dhe fotot e Gift Cards" },
   { href: "/admin/hours", label: "Opening Hours", icon: Clock, desc: "Ndrysho oraret e hapjes" },
 ];
 

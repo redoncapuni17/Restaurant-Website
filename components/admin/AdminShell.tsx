@@ -10,6 +10,7 @@ import {
   Images,
   Calendar,
   Clock,
+  Gift,
   LogOut,
 } from "lucide-react";
 
@@ -19,6 +20,7 @@ const NAV = [
   { href: "/admin/menu", label: "Menu", icon: UtensilsCrossed },
   { href: "/admin/gallery", label: "Gallery", icon: Images },
   { href: "/admin/events", label: "Events", icon: Calendar },
+  { href: "/admin/gift-cards", label: "Gift Cards", icon: Gift },
   { href: "/admin/hours", label: "Hours", icon: Clock },
 ];
 

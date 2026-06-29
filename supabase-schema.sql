@@ -43,6 +43,13 @@ CREATE TABLE site_images (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 3c. Site Content (tekste të konfigurueshme: faqja Gift Cards, etj.)
+CREATE TABLE site_content (
+  key TEXT PRIMARY KEY,
+  value TEXT DEFAULT '',
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- 4. Opening Hours
 CREATE TABLE opening_hours (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -72,6 +79,7 @@ ALTER TABLE menu_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE opening_hours ENABLE ROW LEVEL SECURITY;
 ALTER TABLE site_images ENABLE ROW LEVEL SECURITY;
+ALTER TABLE site_content ENABLE ROW LEVEL SECURITY;
 
 -- PUBLIC: mund të lexojë të gjitha (website publik)
 CREATE POLICY "Public read gallery" ON gallery_images FOR SELECT USING (TRUE);
@@ -79,6 +87,7 @@ CREATE POLICY "Public read menu" ON menu_items FOR SELECT USING (TRUE);
 CREATE POLICY "Public read events" ON events FOR SELECT USING (TRUE);
 CREATE POLICY "Public read hours" ON opening_hours FOR SELECT USING (TRUE);
 CREATE POLICY "Public read site images" ON site_images FOR SELECT USING (TRUE);
+CREATE POLICY "Public read site content" ON site_content FOR SELECT USING (TRUE);
 
 -- AUTHENTICATED (Admin): mund të bëjë gjithçka
 CREATE POLICY "Admin full access gallery" ON gallery_images FOR ALL TO authenticated USING (true) WITH CHECK (true);
@@ -86,6 +95,7 @@ CREATE POLICY "Admin full access menu" ON menu_items FOR ALL TO authenticated US
 CREATE POLICY "Admin full access events" ON events FOR ALL TO authenticated USING (true) WITH CHECK (true);
 CREATE POLICY "Admin full access hours" ON opening_hours FOR ALL TO authenticated USING (true) WITH CHECK (true);
 CREATE POLICY "Admin full access site images" ON site_images FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin full access site content" ON site_content FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 -- ============================================
 -- Storage Bucket për Gallery

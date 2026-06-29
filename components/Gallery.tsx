@@ -35,8 +35,10 @@ export default function Gallery() {
   if (loading || images.length === 0) return null;
 
   return (
-    <section className="py-24 bg-pupa-beige">
-      <div className="max-w-7xl mx-auto px-6">
+    <section className="py-28 bg-pupa-brown relative overflow-hidden">
+      {/* Glow smerald dekorativ */}
+      <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 w-[50rem] h-[30rem] glow-gold blur-3xl opacity-20 pointer-events-none" />
+      <div className="max-w-7xl mx-auto px-6 relative">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -45,10 +47,10 @@ export default function Gallery() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <p className="font-sans text-pupa-gold text-xs tracking-[0.4em] uppercase mb-4">
+          <p className="font-sans text-pupa-champagne text-xs tracking-[0.4em] uppercase mb-4">
             Our World
           </p>
-          <h2 className="font-serif text-4xl md:text-5xl text-pupa-brown font-medium mb-4">
+          <h2 className="font-serif text-5xl md:text-6xl text-pupa-cream font-semibold mb-4">
             Gallery
           </h2>
           <div className="w-16 h-px bg-pupa-gold mx-auto" />
@@ -63,7 +65,7 @@ export default function Gallery() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.08 }}
-              className={`relative overflow-hidden cursor-pointer group ${
+              className={`relative overflow-hidden cursor-pointer group rounded-xl ring-1 ring-pupa-gold/15 ${
                 i === 0 || i === 3 ? "md:col-span-2" : ""
               }`}
               style={{ aspectRatio: i === 0 || i === 3 ? "2/1" : "1/1" }}
@@ -73,13 +75,13 @@ export default function Gallery() {
                 src={img.url}
                 alt={img.alt}
                 fill
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                className="object-cover transition-transform duration-700 group-hover:scale-110"
                 sizes="(max-width: 768px) 50vw, 33vw"
               />
               {/* Hover overlay */}
-              <div className="absolute inset-0 bg-pupa-dark/0 group-hover:bg-pupa-dark/30 transition-all duration-500 flex items-center justify-center">
-                <span className="text-pupa-cream text-sm tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-sans">
-                  View
+              <div className="absolute inset-0 bg-gradient-to-t from-pupa-dark/80 via-pupa-dark/0 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end justify-center pb-5">
+                <span className="inline-flex items-center gap-2 text-pupa-cream text-xs tracking-widest uppercase translate-y-2 group-hover:translate-y-0 transition-transform duration-300 font-sans">
+                  <span className="w-5 h-px bg-pupa-gold" /> View
                 </span>
               </div>
             </motion.div>
