@@ -1,13 +1,30 @@
+import dynamic from "next/dynamic";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
-import Gallery from "@/components/Gallery";
 import BookingWidget from "@/components/BookingWidget";
-import { SITE_IMAGES } from "@/lib/siteConfig";
+
+const Gallery = dynamic(() => import("@/components/Gallery"), {
+  loading: () => (
+    <section className="py-28 bg-pupa-brown">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="h-8 w-32 bg-pupa-dark/40 rounded mx-auto mb-4 animate-pulse" />
+        <div className="h-12 w-48 bg-pupa-dark/40 rounded mx-auto mb-16 animate-pulse" />
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="aspect-square rounded-xl bg-pupa-dark/30 animate-pulse"
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  ),
+});
 
 export default function HomePage() {
   return (
     <>
-      <link rel="preload" as="image" href={SITE_IMAGES.hero} />
       <Hero />
       <About />
       <Gallery />

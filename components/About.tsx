@@ -1,14 +1,20 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { ABOUT_IMAGES } from "@/lib/siteConfig";
 
 export default function About() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const inView = useInView(sectionRef, { once: true, margin: "80px 0px" });
   const images = ABOUT_IMAGES;
 
   return (
-    <section className="py-28 bg-pupa-beige relative overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="py-28 bg-pupa-beige relative overflow-hidden"
+    >
       <div className="absolute -top-24 -right-24 w-96 h-96 glow-gold blur-3xl opacity-10 pointer-events-none" />
       <div className="max-w-6xl mx-auto px-6 relative">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
@@ -62,33 +68,45 @@ export default function About() {
             transition={{ duration: 0.9, delay: 0.2 }}
             className="grid grid-cols-2 gap-3"
           >
-            <div className="relative aspect-[3/4] overflow-hidden rounded-xl ring-1 ring-pupa-gold/20 shadow-lg group">
-              <Image
-                src={images[0].url}
-                alt={images[0].alt}
-                fill
-                loading="lazy"
-                className="object-cover group-hover:scale-105 transition-transform duration-700"
-                sizes="(max-width: 768px) 50vw, 25vw"
-              />
-            </div>
-            <div className="flex flex-col gap-3">
-              {images.slice(1, 3).map((img) => (
-                <div
-                  key={img.key}
-                  className="relative aspect-square overflow-hidden rounded-xl ring-1 ring-pupa-gold/20 shadow-lg group"
-                >
+            {inView ? (
+              <>
+                <div className="relative aspect-[3/4] overflow-hidden rounded-xl ring-1 ring-pupa-gold/20 shadow-lg group">
                   <Image
-                    src={img.url}
-                    alt={img.alt}
+                    src={images[0].url}
+                    alt={images[0].alt}
                     fill
                     loading="lazy"
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                     sizes="(max-width: 768px) 50vw, 25vw"
                   />
                 </div>
-              ))}
-            </div>
+                <div className="flex flex-col gap-3">
+                  {images.slice(1, 3).map((img) => (
+                    <div
+                      key={img.key}
+                      className="relative aspect-square overflow-hidden rounded-xl ring-1 ring-pupa-gold/20 shadow-lg group"
+                    >
+                      <Image
+                        src={img.url}
+                        alt={img.alt}
+                        fill
+                        loading="lazy"
+                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                        sizes="(max-width: 768px) 50vw, 25vw"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="aspect-[3/4] rounded-xl bg-pupa-warm/20 animate-pulse" />
+                <div className="flex flex-col gap-3">
+                  <div className="aspect-square rounded-xl bg-pupa-warm/20 animate-pulse" />
+                  <div className="aspect-square rounded-xl bg-pupa-warm/20 animate-pulse" />
+                </div>
+              </>
+            )}
           </motion.div>
         </div>
       </div>

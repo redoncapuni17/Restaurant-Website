@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, UtensilsCrossed } from "lucide-react";
@@ -26,16 +27,20 @@ export default function Hero() {
   return (
     <section className="relative h-[92vh] min-h-[640px] overflow-hidden bg-pupa-dark">
       <motion.div
-        className="absolute inset-0 bg-gradient-to-br from-pupa-dark via-pupa-brown to-pupa-dark"
+        className="absolute inset-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: ready ? 1 : 0 }}
         transition={{ duration: 0.9, ease: EASE_OUT }}
-        style={{
-          backgroundImage: `url('${SITE_IMAGES.hero}')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center 35%",
-        }}
-      />
+      >
+        <Image
+          src={SITE_IMAGES.hero}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-[center_35%]"
+        />
+      </motion.div>
 
       <div className="absolute inset-0 bg-gradient-to-b from-pupa-dark/85 via-pupa-dark/55 to-pupa-dark/95" />
       <div className="absolute inset-0 bg-gradient-to-tr from-pupa-brown/50 via-transparent to-pupa-dark/40" />
