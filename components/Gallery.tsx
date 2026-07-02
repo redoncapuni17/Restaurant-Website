@@ -3,38 +3,50 @@
 import { useCallback, useMemo, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   GALLERY_EXTRA_COUNT,
+  GALLERY_LOAD_BATCH,
   GALLERY_PREVIEW,
+  GALLERY_TOTAL,
   type GalleryImage,
 } from "@/lib/galleryPreview";
 
 export default function Gallery() {
   const [lightbox, setLightbox] = useState<number | null>(null);
-  const [extraImages, setExtraImages] = useState<GalleryImage[] | null>(null);
+  const [extraPool, setExtraPool] = useState<GalleryImage[] | null>(null);
+  const [extraVisibleCount, setExtraVisibleCount] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  const isExpanded = extraImages !== null;
+  const displayed = useMemo(() => {
+    const extra = extraPool ? extraPool.slice(0, extraVisibleCount) : [];
+    return [...GALLERY_PREVIEW, ...extra];
+  }, [extraPool, extraVisibleCount]);
 
-  const displayed = useMemo(
-    () => (isExpanded ? [...GALLERY_PREVIEW, ...extraImages!] : GALLERY_PREVIEW),
-    [isExpanded, extraImages]
-  );
+  const hasMore = extraVisibleCount < GALLERY_EXTRA_COUNT;
+  const hasExtras = extraVisibleCount > 0;
 
   const handleLoadMore = useCallback(async () => {
-    if (loadingMore || isExpanded) return;
+    if (loadingMore || !hasMore) return;
     setLoadingMore(true);
     try {
-      const { GALLERY_EXTRA } = await import("@/lib/galleryExtra");
-      setExtraImages(GALLERY_EXTRA);
+      let pool = extraPool;
+      if (!pool) {
+        const { GALLERY_EXTRA } = await import("@/lib/galleryExtra");
+        pool = GALLERY_EXTRA;
+        setExtraPool(pool);
+      }
+      setExtraVisibleCount((count) =>
+        Math.min(count + GALLERY_LOAD_BATCH, pool!.length)
+      );
     } finally {
       setLoadingMore(false);
     }
-  }, [isExpanded, loadingMore]);
+  }, [extraPool, hasMore, loadingMore]);
 
   const handleShowLess = useCallback(() => {
-    setExtraImages(null);
+    setExtraVisibleCount(0);
+    setExtraPool(null);
     setLightbox(null);
   }, []);
 
@@ -44,28 +56,23 @@ export default function Gallery() {
     setLightbox((i) => (i! + 1) % displayed.length);
 
   return (
-    <section
-      className="py-20 sm:py-24 bg-pupa-brown relative"
-      data-gallery="preview-v2"
-    >
+    <section className="py-24 sm:py-28 bg-pupa-brown relative">
       <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 w-[50rem] h-[30rem] glow-gold blur-3xl opacity-20 pointer-events-none" />
-      <div className="relative z-10 max-w-4xl mx-auto px-6">
-        <div className="text-center mb-10 sm:mb-12">
+      <div className="relative z-10 max-w-6xl mx-auto px-6">
+        <div className="text-center md:text-left mb-10 sm:mb-12">
           <p className="font-sans text-pupa-champagne text-xs tracking-[0.4em] uppercase mb-4">
             Our World
           </p>
           <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-pupa-cream font-semibold mb-4">
             Gallery
           </h2>
-          <div className="w-16 h-px bg-pupa-gold mx-auto mb-4" />
+          <div className="w-16 h-px bg-pupa-gold mx-auto md:mx-0 mb-4" />
           <p className="font-sans text-pupa-warm/60 text-xs sm:text-sm">
-            {isExpanded
-              ? `Showing all ${displayed.length} photos`
-              : `Showing ${GALLERY_PREVIEW.length} of ${GALLERY_PREVIEW.length + GALLERY_EXTRA_COUNT} photos`}
+            Showing {displayed.length} of {GALLERY_TOTAL} photos
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {displayed.map((img, i) => (
             <GalleryTile
               key={img.url}
@@ -73,35 +80,29 @@ export default function Gallery() {
               onOpen={() => setLightbox(i)}
             />
           ))}
-
-          {!isExpanded && (
-            <button
-              type="button"
-              onClick={handleLoadMore}
-              disabled={loadingMore}
-              aria-label={`Load ${GALLERY_EXTRA_COUNT} more gallery photos`}
-              className="relative aspect-square w-full rounded-xl border-2 border-dashed border-pupa-gold/50 bg-pupa-dark/40 hover:bg-pupa-dark/70 hover:border-pupa-gold transition-colors duration-300 flex flex-col items-center justify-center gap-2 p-4 text-center disabled:opacity-60"
-            >
-              <Plus size={28} className="text-pupa-gold" strokeWidth={1.5} />
-              <span className="font-sans text-pupa-cream text-xs sm:text-sm tracking-[0.15em] uppercase">
-                {loadingMore ? "Loading…" : "Load more"}
-              </span>
-              <span className="font-sans text-pupa-warm/70 text-[0.65rem] sm:text-xs">
-                +{GALLERY_EXTRA_COUNT} photos
-              </span>
-            </button>
-          )}
         </div>
 
-        {isExpanded && (
-          <div className="flex justify-center mt-8 sm:mt-10">
-            <button
-              type="button"
-              onClick={handleShowLess}
-              className="px-8 py-3.5 border border-pupa-warm/40 text-pupa-warm font-sans text-xs tracking-[0.2em] uppercase rounded-sm hover:border-pupa-gold hover:text-pupa-gold transition-colors duration-300"
-            >
-              Show less
-            </button>
+        {(hasMore || hasExtras) && (
+          <div className="flex flex-wrap justify-center md:justify-start gap-4 mt-8 sm:mt-10">
+            {hasMore && (
+              <button
+                type="button"
+                onClick={handleLoadMore}
+                disabled={loadingMore}
+                className="px-8 py-3.5 bg-pupa-gold text-pupa-dark font-sans text-xs tracking-[0.2em] uppercase rounded-sm hover:bg-pupa-cream transition-colors duration-300 disabled:opacity-60"
+              >
+                {loadingMore ? "Loading…" : "Load more"}
+              </button>
+            )}
+            {hasExtras && (
+              <button
+                type="button"
+                onClick={handleShowLess}
+                className="px-8 py-3.5 border border-pupa-warm/40 text-pupa-warm font-sans text-xs tracking-[0.2em] uppercase rounded-sm hover:border-pupa-gold hover:text-pupa-gold transition-colors duration-300"
+              >
+                Show less
+              </button>
+            )}
           </div>
         )}
       </div>
