@@ -1,24 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
-import { GALLERY_IMAGES, GALLERY_PREVIEW_COUNT } from "@/lib/siteConfig";
+import { GALLERY_PREVIEW, type GalleryImage } from "@/lib/galleryPreview";
 
 export default function Gallery() {
   const [lightbox, setLightbox] = useState<number | null>(null);
-  const [showAll, setShowAll] = useState(false);
+  const [extraImages, setExtraImages] = useState<GalleryImage[] | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
 
-  const images = GALLERY_IMAGES;
-  const previewImages = images.slice(0, GALLERY_PREVIEW_COUNT);
-  const extraImages = images.slice(GALLERY_PREVIEW_COUNT);
-  const hasMore = extraImages.length > 0;
+  const displayed = useMemo(
+    () => (extraImages ? [...GALLERY_PREVIEW, ...extraImages] : GALLERY_PREVIEW),
+    [extraImages]
+  );
+
+  const hasMore = extraImages === null;
+
+  const handleLoadMore = useCallback(async () => {
+    setLoadingMore(true);
+    const { GALLERY_EXTRA } = await import("@/lib/galleryExtra");
+    setExtraImages(GALLERY_EXTRA);
+    setLoadingMore(false);
+  }, []);
+
+  const handleShowLess = useCallback(() => {
+    setExtraImages(null);
+    setLightbox(null);
+  }, []);
 
   const prev = () =>
-    setLightbox((i) => (i! - 1 + images.length) % images.length);
+    setLightbox((i) => (i! - 1 + displayed.length) % displayed.length);
   const next = () =>
-    setLightbox((i) => (i! + 1) % images.length);
+    setLightbox((i) => (i! + 1) % displayed.length);
 
   return (
     <section className="py-20 sm:py-24 bg-pupa-brown relative overflow-hidden">
@@ -34,49 +49,36 @@ export default function Gallery() {
           <div className="w-16 h-px bg-pupa-gold mx-auto" />
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {previewImages.map((img, i) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-4xl mx-auto">
+          {displayed.map((img, i) => (
             <GalleryTile
               key={img.url}
               img={img}
               onOpen={() => setLightbox(i)}
             />
           ))}
-
-          {showAll &&
-            extraImages.map((img, i) => (
-              <GalleryTile
-                key={img.url}
-                img={img}
-                onOpen={() => setLightbox(GALLERY_PREVIEW_COUNT + i)}
-              />
-            ))}
         </div>
 
-        {hasMore && (
-          <div className="flex justify-center mt-8 sm:mt-10">
-            {!showAll ? (
-              <button
-                type="button"
-                onClick={() => setShowAll(true)}
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-pupa-gold text-pupa-dark font-sans text-xs tracking-[0.2em] uppercase rounded-sm hover:bg-pupa-cream transition-colors duration-300"
-              >
-                Load more
-                <span className="normal-case tracking-normal opacity-80">
-                  ({extraImages.length} photos)
-                </span>
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setShowAll(false)}
-                className="inline-flex items-center gap-2 px-8 py-3.5 border border-pupa-warm/40 text-pupa-warm font-sans text-xs tracking-[0.2em] uppercase rounded-sm hover:border-pupa-gold hover:text-pupa-gold transition-colors duration-300"
-              >
-                Show less
-              </button>
-            )}
-          </div>
-        )}
+        <div className="flex justify-center mt-8 sm:mt-10">
+          {hasMore ? (
+            <button
+              type="button"
+              onClick={handleLoadMore}
+              disabled={loadingMore}
+              className="inline-flex items-center gap-2 px-8 py-3.5 bg-pupa-gold text-pupa-dark font-sans text-xs tracking-[0.2em] uppercase rounded-sm hover:bg-pupa-cream transition-colors duration-300 disabled:opacity-60"
+            >
+              {loadingMore ? "Loading…" : "Load more"}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleShowLess}
+              className="inline-flex items-center gap-2 px-8 py-3.5 border border-pupa-warm/40 text-pupa-warm font-sans text-xs tracking-[0.2em] uppercase rounded-sm hover:border-pupa-gold hover:text-pupa-gold transition-colors duration-300"
+            >
+              Show less
+            </button>
+          )}
+        </div>
       </div>
 
       <AnimatePresence>
@@ -110,8 +112,8 @@ export default function Gallery() {
               onClick={(e) => e.stopPropagation()}
             >
               <Image
-                src={images[lightbox].url}
-                alt={images[lightbox].alt}
+                src={displayed[lightbox].url}
+                alt={displayed[lightbox].alt}
                 width={1200}
                 height={800}
                 className="object-contain w-full h-full max-h-[80vh]"
@@ -138,7 +140,7 @@ function GalleryTile({
   img,
   onOpen,
 }: {
-  img: (typeof GALLERY_IMAGES)[number];
+  img: GalleryImage;
   onOpen: () => void;
 }) {
   return (
