@@ -66,8 +66,8 @@ export const GALLERY_IMAGES = [
   { url: "/images/gallery/39.jpg", alt: "Dessert and coffee" },
 ];
 
-/** How many gallery photos to show before "See more". */
-export const GALLERY_PREVIEW_COUNT = 6;
+/** How many gallery photos to show before "Load more". */
+export const GALLERY_PREVIEW_COUNT = 5;
 
 export const OPENING_HOURS = [
   { day: "Monday", open_time: "17:00", close_time: "22:00", is_closed: false },

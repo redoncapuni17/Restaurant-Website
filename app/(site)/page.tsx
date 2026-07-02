@@ -10,7 +10,7 @@ const Gallery = dynamic(() => import("@/components/Gallery"), {
         <div className="h-8 w-32 bg-pupa-dark/40 rounded mx-auto mb-4 animate-pulse" />
         <div className="h-12 w-48 bg-pupa-dark/40 rounded mx-auto mb-16 animate-pulse" />
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {Array.from({ length: 6 }).map((_, i) => (
+          {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
               className="aspect-square rounded-xl bg-pupa-dark/30 animate-pulse"
