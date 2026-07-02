@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ABOUT_IMAGES } from "@/lib/siteConfig";
 
@@ -61,20 +62,29 @@ export default function About() {
             transition={{ duration: 0.9, delay: 0.2 }}
             className="grid grid-cols-2 gap-3"
           >
-            <div className="aspect-[3/4] overflow-hidden rounded-xl ring-1 ring-pupa-gold/20 shadow-lg group">
-              <img
+            <div className="relative aspect-[3/4] overflow-hidden rounded-xl ring-1 ring-pupa-gold/20 shadow-lg group">
+              <Image
                 src={images[0].url}
                 alt={images[0].alt}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                fill
+                loading="lazy"
+                className="object-cover group-hover:scale-105 transition-transform duration-700"
+                sizes="(max-width: 768px) 50vw, 25vw"
               />
             </div>
             <div className="flex flex-col gap-3">
               {images.slice(1, 3).map((img) => (
-                <div key={img.key} className="aspect-square overflow-hidden rounded-xl ring-1 ring-pupa-gold/20 shadow-lg group">
-                  <img
+                <div
+                  key={img.key}
+                  className="relative aspect-square overflow-hidden rounded-xl ring-1 ring-pupa-gold/20 shadow-lg group"
+                >
+                  <Image
                     src={img.url}
                     alt={img.alt}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    fill
+                    loading="lazy"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    sizes="(max-width: 768px) 50vw, 25vw"
                   />
                 </div>
               ))}

@@ -85,6 +85,7 @@ function EventRow({
               src={event.image_url}
               alt={event.title}
               fill
+              loading="lazy"
               sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-105"
             />

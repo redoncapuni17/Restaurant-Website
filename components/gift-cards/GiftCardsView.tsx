@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import PageHero from "@/components/motion/PageHero";
 import FadeIn from "@/components/motion/FadeIn";
@@ -43,11 +44,13 @@ export default function GiftCardsView({ content: c, images: img }: GiftCardsView
               transition={{ duration: 0.65, ease: EASE_OUT }}
               className="max-w-xs sm:max-w-sm mx-auto mb-10 sm:mb-12"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={img.giftcards_card}
                 alt="Pupa Gift Card"
-                className="w-full drop-shadow-xl"
+                width={500}
+                height={200}
+                loading="lazy"
+                className="w-full h-auto drop-shadow-xl"
               />
             </motion.div>
           )}

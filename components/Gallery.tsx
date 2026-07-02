@@ -3,12 +3,28 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
-import { GALLERY_IMAGES } from "@/lib/siteConfig";
+import { X, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
+import { GALLERY_IMAGES, GALLERY_PREVIEW_COUNT } from "@/lib/siteConfig";
+import { EASE_OUT } from "@/components/motion/constants";
+
+function galleryCellClass(index: number, preview: boolean) {
+  if (preview && (index === 0 || index === 3)) return "md:col-span-2";
+  return "";
+}
+
+function galleryAspect(index: number, preview: boolean) {
+  if (preview && (index === 0 || index === 3)) return "2/1";
+  return "1/1";
+}
 
 export default function Gallery() {
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const [showAll, setShowAll] = useState(false);
+
   const images = GALLERY_IMAGES;
+  const hasMore = images.length > GALLERY_PREVIEW_COUNT;
+  const visibleImages = showAll ? images : images.slice(0, GALLERY_PREVIEW_COUNT);
+  const hiddenCount = images.length - GALLERY_PREVIEW_COUNT;
 
   const prev = () => setLightbox((i) => (i! - 1 + images.length) % images.length);
   const next = () => setLightbox((i) => (i! + 1) % images.length);
@@ -34,25 +50,29 @@ export default function Gallery() {
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {images.map((img, i) => (
+          {visibleImages.map((img, i) => (
             <motion.div
               key={img.url}
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.96 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-              className={`relative overflow-hidden cursor-pointer group rounded-xl ring-1 ring-pupa-gold/15 ${
-                i === 0 || i === 3 ? "md:col-span-2" : ""
-              }`}
-              style={{ aspectRatio: i === 0 || i === 3 ? "2/1" : "1/1" }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.45, delay: Math.min(i * 0.05, 0.3), ease: EASE_OUT }}
+              className={`relative overflow-hidden cursor-pointer group rounded-xl ring-1 ring-pupa-gold/15 ${galleryCellClass(i, !showAll)}`}
+              style={{ aspectRatio: galleryAspect(i, !showAll) }}
               onClick={() => setLightbox(i)}
             >
               <Image
                 src={img.url}
                 alt={img.alt}
                 fill
+                loading={i === 0 ? "eager" : "lazy"}
+                priority={i === 0}
                 className="object-cover transition-transform duration-700 group-hover:scale-110"
-                sizes="(max-width: 768px) 50vw, 33vw"
+                sizes={
+                  !showAll && (i === 0 || i === 3)
+                    ? "(max-width: 768px) 100vw, 66vw"
+                    : "(max-width: 768px) 50vw, 33vw"
+                }
               />
               <div className="absolute inset-0 bg-gradient-to-t from-pupa-dark/80 via-pupa-dark/0 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end justify-center pb-5">
                 <span className="inline-flex items-center gap-2 text-pupa-cream text-xs tracking-widest uppercase translate-y-2 group-hover:translate-y-0 transition-transform duration-300 font-sans">
@@ -62,6 +82,32 @@ export default function Gallery() {
             </motion.div>
           ))}
         </div>
+
+        {hasMore && (
+          <div className="flex justify-center mt-10">
+            {!showAll ? (
+              <button
+                type="button"
+                onClick={() => setShowAll(true)}
+                className="inline-flex items-center gap-2 px-8 py-3.5 border border-pupa-gold/50 text-pupa-cream font-sans text-xs tracking-[0.2em] uppercase rounded-sm hover:bg-pupa-gold hover:text-pupa-dark hover:border-pupa-gold transition-colors duration-300"
+              >
+                See more
+                <span className="text-pupa-gold/80 normal-case tracking-normal">
+                  (+{hiddenCount} photos)
+                </span>
+                <ChevronDown size={16} className="text-pupa-gold" />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowAll(false)}
+                className="inline-flex items-center gap-2 px-8 py-3.5 border border-pupa-warm/40 text-pupa-warm font-sans text-xs tracking-[0.2em] uppercase rounded-sm hover:border-pupa-gold hover:text-pupa-gold transition-colors duration-300"
+              >
+                Show less
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       <AnimatePresence>
@@ -76,12 +122,14 @@ export default function Gallery() {
             <button
               onClick={() => setLightbox(null)}
               className="absolute top-6 right-6 text-pupa-cream hover:text-pupa-gold"
+              aria-label="Close gallery"
             >
               <X size={28} />
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); prev(); }}
               className="absolute left-6 text-pupa-cream hover:text-pupa-gold"
+              aria-label="Previous image"
             >
               <ChevronLeft size={36} />
             </button>
@@ -100,6 +148,7 @@ export default function Gallery() {
             <button
               onClick={(e) => { e.stopPropagation(); next(); }}
               className="absolute right-6 text-pupa-cream hover:text-pupa-gold"
+              aria-label="Next image"
             >
               <ChevronRight size={36} />
             </button>
