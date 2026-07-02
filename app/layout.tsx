@@ -40,6 +40,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${cormorant.variable}`}>
+      <head>
+        <link rel="dns-prefetch" href="https://booking.resdiary.com" />
+        <link rel="preconnect" href="https://booking.resdiary.com" crossOrigin="" />
+      </head>
       <body>{children}</body>
     </html>
   );
