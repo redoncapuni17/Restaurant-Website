@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { CalendarCheck, Clock, ShieldCheck } from "lucide-react";
 
@@ -10,16 +9,11 @@ const TRUST_BADGES = [
   { icon: ShieldCheck, label: "Secure booking" },
 ];
 
-const RESDIARY_WIDGET_URL =
-  "https://booking.resdiary.com/widget/Standard/PUPA/48467";
-
-// ResDiary widget runs in a cross-origin iframe — we cannot style its internals.
-// Keep scale at 1 so text and calendar cells stay sharp (scaling causes blur).
-const WIDGET_HEIGHT = 640;
-
-export default function BookingWidget() {
-  const [isLoaded, setIsLoaded] = useState(false);
-
+export default function BookingWidget({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <section
       id="reservation"
@@ -76,62 +70,9 @@ export default function BookingWidget() {
             </p>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative w-full max-w-md mx-auto"
-          >
-            <div className="rounded-xl overflow-hidden border border-pupa-warm/30 bg-white shadow-lg shadow-black/20">
-              <div className="relative bg-white">
-                {!isLoaded && (
-                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-5 bg-white">
-                    <div className="relative w-14 h-14">
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{
-                          duration: 2,
-                          repeat: Infinity,
-                          ease: "linear",
-                        }}
-                        className="absolute inset-0 border-2 border-transparent border-t-pupa-gold rounded-full"
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center text-pupa-gold text-xl">
-                        🍽
-                      </div>
-                    </div>
-                    <p className="font-sans text-pupa-brown/50 text-xs tracking-wider">
-                      Loading reservation system...
-                    </p>
-                  </div>
-                )}
-
-                <div
-                  className="overflow-hidden bg-white"
-                  style={{ height: `${WIDGET_HEIGHT}px` }}
-                >
-                  <iframe
-                    src={RESDIARY_WIDGET_URL}
-                    title="Book a table at Pupa Restaurant & Bar"
-                    onLoad={() => setIsLoaded(true)}
-                    className="block w-full bg-white"
-                    style={{
-                      height: `${WIDGET_HEIGHT}px`,
-                      border: "0",
-                    }}
-                    loading="eager"
-                  />
-                </div>
-              </div>
-
-              <div className="border-t border-pupa-warm/20 bg-pupa-beige/40 px-4 py-3 text-center">
-                <span className="font-sans text-pupa-brown/45 text-xs">
-                  Powered by ResDiary — secure online booking
-                </span>
-              </div>
-            </div>
-          </motion.div>
+          <div className="relative w-full max-w-md mx-auto lg:ml-auto lg:mr-0">
+            {children}
+          </div>
         </div>
       </div>
     </section>
