@@ -1,4 +1,3 @@
-import { preload } from "react-dom";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Gallery from "@/components/Gallery";
@@ -21,13 +20,11 @@ async function getHeroUrl(): Promise<string | null> {
 export default async function HomePage() {
   const heroUrl = await getHeroUrl();
 
-  // Preload i imazhit kryesor në <head> që të nisë sa më herët (LCP i shpejtë)
-  if (heroUrl) {
-    preload(heroUrl, { as: "image", fetchPriority: "high" });
-  }
-
   return (
     <>
+      {heroUrl && (
+        <link rel="preload" as="image" href={heroUrl} fetchPriority="high" />
+      )}
       <IntroLoader />
       <Hero initialBgUrl={heroUrl} />
       <About />
