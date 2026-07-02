@@ -2,31 +2,13 @@ import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Gallery from "@/components/Gallery";
 import BookingWidget from "@/components/BookingWidget";
-import IntroLoader from "@/components/IntroLoader";
-import { supabase } from "@/lib/supabase";
+import { SITE_IMAGES } from "@/lib/siteConfig";
 
-// Rifresko URL-në e imazhit kryesor çdo 60s (ndryshimet nga admini dalin shpejt)
-export const revalidate = 60;
-
-async function getHeroUrl(): Promise<string | null> {
-  const { data } = await supabase
-    .from("site_images")
-    .select("url")
-    .eq("key", "hero")
-    .maybeSingle();
-  return data?.url ?? null;
-}
-
-export default async function HomePage() {
-  const heroUrl = await getHeroUrl();
-
+export default function HomePage() {
   return (
     <>
-      {heroUrl && (
-        <link rel="preload" as="image" href={heroUrl} />
-      )}
-      <IntroLoader />
-      <Hero initialBgUrl={heroUrl} />
+      <link rel="preload" as="image" href={SITE_IMAGES.hero} />
+      <Hero />
       <About />
       <Gallery />
       <BookingWidget />

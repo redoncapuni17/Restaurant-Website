@@ -1,22 +1,12 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Instagram, Twitter, Facebook, MapPin, Phone, Mail } from "lucide-react";
-import { supabase } from "@/lib/supabase";
-import type { OpeningHours } from "@/types";
+import { OPENING_HOURS } from "@/lib/siteConfig";
 
 const DAYS_ORDER = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-interface HourRow {
-  day: string;
-  time: string;
-  closed: boolean;
-}
-
-function formatHours(hours: OpeningHours[]): HourRow[] {
-  return DAYS_ORDER.map((day) => {
-    const h = hours.find((row) => row.day === day);
+export default function Footer() {
+  const rows = DAYS_ORDER.map((day) => {
+    const h = OPENING_HOURS.find((row) => row.day === day);
     if (!h) return { day, time: "", closed: false };
     return {
       day,
@@ -24,24 +14,11 @@ function formatHours(hours: OpeningHours[]): HourRow[] {
       closed: h.is_closed,
     };
   });
-}
-
-export default function Footer() {
-  const [rows, setRows] = useState<HourRow[]>([]);
-
-  useEffect(() => {
-    const fetchHours = async () => {
-      const { data } = await supabase.from("opening_hours").select("*");
-      if (data && data.length) setRows(formatHours(data));
-    };
-    fetchHours();
-  }, []);
 
   return (
     <footer className="bg-pupa-dark text-pupa-warm border-t border-pupa-gold/15">
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-          {/* Contact */}
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 py-12 sm:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-12">
           <div>
             <h4 className="font-serif text-pupa-cream text-lg mb-6">Contact Us</h4>
             <div className="space-y-3 font-sans text-sm">
@@ -64,9 +41,8 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Center - Logo & Social */}
-          <div className="flex flex-col items-center text-center">
-            <h3 className="font-serif text-pupa-cream text-3xl font-semibold mb-3">Pupa Restaurant</h3>
+          <div className="flex flex-col items-center text-center md:items-center">
+            <h3 className="font-serif text-pupa-cream text-2xl sm:text-3xl font-semibold mb-3">Pupa Restaurant</h3>
             <p className="font-sans text-xs tracking-widest uppercase text-pupa-champagne mb-6">
               Mediterranean Charcoal Grill
             </p>
@@ -84,13 +60,14 @@ export default function Footer() {
                 <Facebook size={20} />
               </a>
             </div>
-            <Link href="#reservation"
-              className="px-6 py-2.5 border border-pupa-gold text-pupa-gold text-xs tracking-widest uppercase font-sans hover:bg-pupa-gold hover:text-pupa-dark transition-all duration-300">
+            <Link
+              href="/#reservation"
+              className="w-full sm:w-auto px-6 py-3 sm:py-2.5 border border-pupa-gold text-pupa-gold text-xs tracking-widest uppercase font-sans hover:bg-pupa-gold hover:text-pupa-dark transition-all duration-300 text-center"
+            >
               Reserve a Table
             </Link>
           </div>
 
-          {/* Opening Hours - nga konfigurimi i adminit */}
           <div>
             <h4 className="font-serif text-pupa-cream text-lg mb-6">Opening Hours</h4>
             <div className="space-y-2.5 font-sans text-sm">
@@ -106,8 +83,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="border-t border-pupa-warm/20 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="border-t border-pupa-warm/20 mt-10 sm:mt-12 pt-6 flex flex-col md:flex-row justify-between items-center gap-3 sm:gap-4 text-center md:text-left">
           <p className="font-sans text-xs text-pupa-warm/50">
             © {new Date().getFullYear()} Pupa Restaurant & Bar. All rights reserved.
           </p>

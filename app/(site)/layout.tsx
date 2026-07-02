@@ -1,9 +1,8 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-// Layout i përbashkët për faqet publike. Navbar-i dhe Footer-i rrinë të montuar
-// gjatë navigimit (si te admini) → ndërrohet vetëm përmbajtja, pa remount dhe
-// pa rifetch të Footer-it. Kjo e bën navigimin të menjëhershëm.
+// Layout i përbashkët për faqet publike. Navbar dhe Footer mbeten të montuar
+// gjatë navigimit — ndërrohet vetëm përmbajtja.
 export default function SiteLayout({
   children,
 }: {
@@ -12,7 +11,7 @@ export default function SiteLayout({
   return (
     <>
       <Navbar />
-      <main>{children}</main>
+      <main className="bg-pupa-beige">{children}</main>
       <Footer />
     </>
   );

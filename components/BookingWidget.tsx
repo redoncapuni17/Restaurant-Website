@@ -10,22 +10,14 @@ const TRUST_BADGES = [
   { icon: ShieldCheck, label: "Secure booking" },
 ];
 
-// URL-ja e widget-it të ResDiary. Është faqe e plotë HTML e pavarur, prandaj e
-// ngarkojmë në një <iframe>: widget-i ekzekutohet në dokumentin e vet (jQuery +
-// knockout + widget.js + window.onload) pa konfliktet e React/Next.js (SPA).
 const RESDIARY_WIDGET_URL =
   "https://booking.resdiary.com/widget/Standard/PUPA/48467";
 
-// Widget-i vjen nga sistemi i ResDiary (iframe cross-origin), prandaj përmasat e
-// brendshme nuk i ndryshojmë dot nga jashtë. E zvogëlojmë gjithë widget-in
-// vizualisht me transform:scale dhe i japim lartësi të mjaftueshme (logjike) që
-// kalendari të shfaqet i plotë, PA scroll të brendshëm.
-const WIDGET_SCALE = 0.92; // sa i vogël (1 = përmasa origjinale)
-const WIDGET_LOGICAL_HEIGHT = 630; // px — lartësia e brendshme aq sa mbaron kalendari (pa bardhësi)
+// ResDiary widget runs in a cross-origin iframe — we cannot style its internals.
+// Keep scale at 1 so text and calendar cells stay sharp (scaling causes blur).
+const WIDGET_HEIGHT = 640;
 
 export default function BookingWidget() {
-  // Kalendari ngarkohet menjëherë kur hapet faqja (jo me scroll/klik), që të
-  // jetë gati. Mbajmë vetëm gjendjen e ngarkimit për overlay-in.
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
@@ -33,15 +25,13 @@ export default function BookingWidget() {
       id="reservation"
       className="py-24 bg-pupa-dark relative overflow-hidden"
     >
-      {/* Dekoracion në background */}
-      <div className="absolute inset-0 opacity-5">
+      <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div className="absolute top-0 left-0 w-64 h-64 border border-pupa-gold rounded-full -translate-x-32 -translate-y-32" />
         <div className="absolute bottom-0 right-0 w-96 h-96 border border-pupa-gold rounded-full translate-x-48 translate-y-48" />
       </div>
 
       <div className="max-w-6xl mx-auto px-6 relative">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
-          {/* Kolona majtas — Teksti */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -61,7 +51,6 @@ export default function BookingWidget() {
               confirmation.
             </p>
 
-            {/* Trust badges */}
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-3 mb-8">
               {TRUST_BADGES.map(({ icon: Icon, label }) => (
                 <div
@@ -87,84 +76,60 @@ export default function BookingWidget() {
             </p>
           </motion.div>
 
-          {/* Kolona djathtas — Karta e widget-it */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative w-full max-w-md mx-auto rounded-2xl overflow-hidden border border-pupa-gold/25 bg-gradient-to-b from-pupa-beige/10 to-pupa-dark/20 shadow-2xl shadow-black/30 backdrop-blur-sm"
+            className="relative w-full max-w-md mx-auto"
           >
-            {/* Vija e artë sipër kartës */}
-            <div className="h-1 w-full bg-gradient-to-r from-transparent via-pupa-gold to-transparent" />
-
-            <div className="relative p-2.5 md:p-3">
-              {/* Loading Placeholder — overlay sipër iframe-it derisa ngarkohet */}
-              {!isLoaded && (
-                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-6 bg-gradient-to-b from-pupa-beige/10 to-pupa-dark/20 backdrop-blur-sm">
-                  {/* Animacion elegant me ngjyrat e restorantit */}
-                  <div className="relative w-16 h-16">
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
-                      className="absolute inset-0 border-2 border-transparent border-t-pupa-gold rounded-full"
-                    />
-                    <motion.div
-                      animate={{ rotate: -360 }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }}
-                      className="absolute inset-2 border-2 border-transparent border-t-pupa-cream/50 rounded-full"
-                    />
-                    {/* Ikona në mes */}
-                    <div className="absolute inset-0 flex items-center justify-center text-pupa-gold text-xl">
-                      🍽
+            <div className="rounded-xl overflow-hidden border border-pupa-warm/30 bg-white shadow-lg shadow-black/20">
+              <div className="relative bg-white">
+                {!isLoaded && (
+                  <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-5 bg-white">
+                    <div className="relative w-14 h-14">
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: "linear",
+                        }}
+                        className="absolute inset-0 border-2 border-transparent border-t-pupa-gold rounded-full"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center text-pupa-gold text-xl">
+                        🍽
+                      </div>
                     </div>
+                    <p className="font-sans text-pupa-brown/50 text-xs tracking-wider">
+                      Loading reservation system...
+                    </p>
                   </div>
+                )}
 
-                  <p className="font-sans text-pupa-warm text-xs tracking-wider animate-pulse">
-                    Loading reservation system...
-                  </p>
+                <div
+                  className="overflow-hidden bg-white"
+                  style={{ height: `${WIDGET_HEIGHT}px` }}
+                >
+                  <iframe
+                    src={RESDIARY_WIDGET_URL}
+                    title="Book a table at Pupa Restaurant & Bar"
+                    onLoad={() => setIsLoaded(true)}
+                    className="block w-full bg-white"
+                    style={{
+                      height: `${WIDGET_HEIGHT}px`,
+                      border: "0",
+                    }}
+                    loading="eager"
+                  />
                 </div>
-              )}
-
-              {/* ResDiary Widget në iframe — ngarkohet vetëm kur seksioni bëhet visible.
-                E zvogëluar me transform:scale; wrapper-i e pret tepricën dhe e
-                cakton lartësinë vizuale = lartësia logjike * scale (pa scroll). */}
-              <div
-                className="overflow-hidden rounded-xl bg-white"
-                style={{
-                  height: `${Math.round(WIDGET_LOGICAL_HEIGHT * WIDGET_SCALE)}px`,
-                }}
-              >
-              <iframe
-                src={RESDIARY_WIDGET_URL}
-                title="Book a table at Pupa Restaurant & Bar"
-                onLoad={() => setIsLoaded(true)}
-                className="block"
-                style={{
-                  width: `${100 / WIDGET_SCALE}%`,
-                  height: `${WIDGET_LOGICAL_HEIGHT}px`,
-                  transform: `scale(${WIDGET_SCALE})`,
-                  transformOrigin: "top left",
-                  border: "0",
-                }}
-                loading="eager"
-              />
               </div>
-            </div>
 
-            {/* Footer i kartës */}
-            <div className="border-t border-pupa-gold/15 bg-pupa-dark/30 px-6 py-4 flex items-center justify-center gap-2 text-center">
-              <span className="font-sans text-pupa-warm/50 text-xs">
-                Powered by ResDiary — secure online booking
-              </span>
+              <div className="border-t border-pupa-warm/20 bg-pupa-beige/40 px-4 py-3 text-center">
+                <span className="font-sans text-pupa-brown/45 text-xs">
+                  Powered by ResDiary — secure online booking
+                </span>
+              </div>
             </div>
           </motion.div>
         </div>

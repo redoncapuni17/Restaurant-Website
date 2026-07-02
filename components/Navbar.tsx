@@ -2,19 +2,22 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Instagram, Facebook, Twitter } from "lucide-react";
+import { Menu, X, Instagram, Facebook, Twitter, ChevronDown } from "lucide-react";
+import { EASE_OUT } from "@/components/motion/constants";
 
 const navLinks = [
   { href: "/", label: "Home" },
   {
     label: "Menus",
     children: [
-      { href: "/menus#wine", label: "Wine List" },
-      { href: "/menus#lunch", label: "Lunch Menu" },
-      { href: "/menus#main", label: "Main Menu" },
-      { href: "/menus#dessert", label: "Dessert Menu" },
-      { href: "/menus#drinks", label: "Drink Menu" },
+      { href: "/menus", label: "All Menus" },
+      { href: "/wine-list", label: "Wine List" },
+      { href: "/lunch-menu", label: "Lunch Menu" },
+      { href: "/main-menu", label: "Main Menu" },
+      { href: "/dessert-menu", label: "Dessert Menu" },
+      { href: "/drink-menu", label: "Drink Menu" },
     ],
   },
   { href: "/private-hire", label: "Private Hire" },
@@ -23,57 +26,90 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    setIsOpen(false);
+    setMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    document.documentElement.style.overflow = isOpen ? "hidden" : "";
+    return () => {
+      document.documentElement.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  const navFocus =
+    "outline-none focus:outline-none focus-visible:ring-1 focus-visible:ring-pupa-gold/40 focus-visible:ring-offset-0 rounded-sm";
+
+  const linkClass = (href: string) =>
+    `block py-3 sm:py-0 font-sans text-sm tracking-wider uppercase transition-colors duration-200 ${
+      pathname === href
+        ? "text-pupa-gold"
+        : "text-pupa-cream/85 hover:text-pupa-gold"
+    }`;
+
   return (
-    <>
-      {/* Cash Payment Banner */}
-      <div className="bg-pupa-dark text-pupa-champagne text-center py-2 text-[0.7rem] tracking-widest uppercase font-sans border-b border-pupa-gold/15">
-        Our restaurant prefers cash payments due to high card transaction fees
+    <header className="w-full bg-pupa-dark">
+      <div className="text-pupa-champagne text-center py-2 px-3 text-[0.6rem] sm:text-[0.7rem] tracking-[0.2em] sm:tracking-widest uppercase font-sans border-b border-pupa-gold/15 leading-relaxed">
+        <span className="hidden sm:inline">
+          Our restaurant prefers cash payments due to high card transaction fees
+        </span>
+        <span className="sm:hidden">We prefer cash payments</span>
       </div>
 
-      {/* Main Navbar */}
       <nav
-        className={`sticky top-0 z-50 transition-all duration-500 ${
+        className={`sticky top-0 z-50 w-full border-b transition-shadow duration-300 ${
           scrolled
-            ? "bg-pupa-dark/90 backdrop-blur-md shadow-lg shadow-black/30 border-b border-pupa-gold/20"
-            : "bg-pupa-dark/70 backdrop-blur-sm"
+            ? "shadow-lg shadow-black/30 border-pupa-gold/20"
+            : "border-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="font-serif text-2xl font-semibold text-pupa-cream tracking-[0.2em] uppercase transition-colors duration-300 hover:text-pupa-gold">
-            Pupa Restaurant & Bar
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-4">
+          <Link
+            href="/"
+            className={`font-serif font-semibold text-pupa-cream tracking-[0.15em] sm:tracking-[0.2em] uppercase transition-colors duration-300 hover:text-pupa-gold shrink-0 ${navFocus}`}
+          >
+            <span className="text-lg sm:text-2xl sm:hidden">Pupa</span>
+            <span className="hidden sm:inline text-2xl">Pupa Restaurant & Bar</span>
           </Link>
 
-          {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) =>
               link.children ? (
                 <div key={link.label} className="relative group">
-                  <button className="relative font-sans text-xs tracking-wider uppercase text-pupa-cream/85 hover:text-pupa-gold transition-colors duration-300">
+                  <button
+                    type="button"
+                    className={`relative border-0 bg-transparent p-0 font-sans text-xs tracking-wider uppercase text-pupa-cream/85 hover:text-pupa-gold transition-colors duration-300 cursor-pointer ${navFocus}`}
+                  >
                     {link.label}
-                    <span className="absolute -bottom-1.5 left-0 h-px w-full bg-pupa-gold scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100" />
+                    <span className="absolute -bottom-1.5 left-0 h-px w-full bg-pupa-gold scale-x-0 opacity-0 origin-left transition-all duration-300 group-hover:scale-x-100 group-hover:opacity-100" />
                   </button>
-                  <div className="absolute top-full left-0 mt-3 w-44 bg-pupa-dark border border-pupa-gold/20 shadow-xl rounded-md overflow-hidden opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300">
-                    {link.children.map((child) => (
-                      <Link
-                        key={child.href}
-                        href={child.href}
-                        prefetch
-                        className="block px-4 py-2.5 text-sm font-sans text-pupa-cream/80 hover:bg-pupa-brown hover:text-pupa-gold transition-colors"
-                      >
-                        {child.label}
-                      </Link>
-                    ))}
+                  {/* pt-3 bridges the gap so hover stays active while moving to the menu */}
+                  <div className="absolute top-full left-0 pt-3 w-48 opacity-0 invisible translate-y-1 pointer-events-none transition-all duration-200 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:pointer-events-auto">
+                    <div className="bg-pupa-dark border border-pupa-gold/20 shadow-xl rounded-md overflow-hidden">
+                      {link.children.map((child) => (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          prefetch
+                          className="block px-4 py-2.5 text-sm font-sans text-pupa-cream/80 hover:bg-pupa-brown hover:text-pupa-gold transition-colors"
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -81,100 +117,167 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href!}
                   prefetch
-                  className="group relative font-sans text-xs tracking-wider uppercase text-pupa-cream/85 hover:text-pupa-gold transition-colors duration-300"
+                  className={`group relative font-sans text-xs tracking-wider uppercase transition-colors duration-300 ${
+                    pathname === link.href ? "text-pupa-gold" : "text-pupa-cream/85 hover:text-pupa-gold"
+                  } ${navFocus}`}
                 >
                   {link.label}
-                  <span className="absolute -bottom-1.5 left-0 h-px w-full bg-pupa-gold scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100" />
+                  <span className="absolute -bottom-1.5 left-0 h-px w-full bg-pupa-gold scale-x-0 opacity-0 origin-left transition-all duration-300 group-hover:scale-x-100 group-hover:opacity-100" />
                 </Link>
               )
             )}
           </div>
 
-          {/* Social + Mobile Toggle */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <div className="hidden lg:flex items-center gap-3">
-              <a href="https://www.instagram.com/pupa.restaurant.bar" target="_blank" rel="noopener noreferrer" className="text-pupa-cream/80 hover:text-pupa-gold transition-colors">
+              <a
+                href="https://www.instagram.com/pupa.restaurant.bar"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`text-pupa-cream/80 hover:text-pupa-gold transition-colors ${navFocus}`}
+              >
                 <Instagram size={18} />
               </a>
-              <a href="https://twitter.com/PupaRestaurant" target="_blank" rel="noopener noreferrer" className="text-pupa-cream/80 hover:text-pupa-gold transition-colors">
+              <a
+                href="https://twitter.com/PupaRestaurant"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`text-pupa-cream/80 hover:text-pupa-gold transition-colors ${navFocus}`}
+              >
                 <Twitter size={18} />
               </a>
-              <a href="https://www.facebook.com/pupa.restaurant" target="_blank" rel="noopener noreferrer" className="text-pupa-cream/80 hover:text-pupa-gold transition-colors">
+              <a
+                href="https://www.facebook.com/pupa.restaurant"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`text-pupa-cream/80 hover:text-pupa-gold transition-colors ${navFocus}`}
+              >
                 <Facebook size={18} />
               </a>
             </div>
 
             <button
+              type="button"
               onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden text-pupa-cream"
+              aria-label={isOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isOpen}
+              className={`lg:hidden border-0 bg-transparent p-2 -mr-2 text-pupa-cream cursor-pointer ${navFocus}`}
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.35, ease: EASE_OUT }}
               className="lg:hidden overflow-hidden bg-pupa-dark border-t border-pupa-gold/15"
             >
-              <div className="px-6 py-4 flex flex-col gap-4">
-                {navLinks.map((link) =>
+              <div className="px-4 sm:px-6 py-2 pb-6 flex flex-col">
+                {navLinks.map((link, i) =>
                   link.children ? (
-                    <div key={link.label}>
+                    <motion.div
+                      key={link.label}
+                      initial={{ opacity: 0, x: -12 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.05, duration: 0.35, ease: EASE_OUT }}
+                    >
                       <button
+                        type="button"
                         onClick={() => setMenuOpen(!menuOpen)}
-                        className="font-sans text-sm tracking-wider uppercase text-pupa-cream w-full text-left"
+                        className={`flex items-center justify-between w-full border-0 bg-transparent p-0 py-3 font-sans text-sm tracking-wider uppercase text-pupa-cream cursor-pointer ${navFocus}`}
                       >
                         {link.label}
+                        <ChevronDown
+                          size={18}
+                          className={`text-pupa-gold transition-transform duration-300 ${menuOpen ? "rotate-180" : ""}`}
+                        />
                       </button>
-                      <div className="ml-4 mt-2 flex flex-col gap-2">
-                        {link.children.map((child) => (
-                          <Link
-                            key={child.href}
-                            href={child.href}
-                            prefetch
-                            onClick={() => setIsOpen(false)}
-                            className="text-sm text-pupa-cream/60 hover:text-pupa-gold"
+                      <AnimatePresence>
+                        {menuOpen && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: EASE_OUT }}
+                            className="overflow-hidden"
                           >
-                            {child.label}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
+                            <div className="ml-3 pl-3 border-l border-pupa-gold/20 flex flex-col mb-2">
+                              {link.children.map((child) => (
+                                <Link
+                                  key={child.href}
+                                  href={child.href}
+                                  prefetch
+                                  onClick={() => setIsOpen(false)}
+                                  className={`py-2.5 text-sm text-pupa-cream/60 hover:text-pupa-gold ${navFocus}`}
+                                >
+                                  {child.label}
+                                </Link>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
                   ) : (
-                    <Link
+                    <motion.div
                       key={link.href}
-                      href={link.href!}
-                      prefetch
-                      onClick={() => setIsOpen(false)}
-                      className="font-sans text-sm tracking-wider uppercase text-pupa-cream/85 hover:text-pupa-gold"
+                      initial={{ opacity: 0, x: -12 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.05, duration: 0.35, ease: EASE_OUT }}
                     >
-                      {link.label}
-                    </Link>
+                      <Link
+                        href={link.href!}
+                        prefetch
+                        onClick={() => setIsOpen(false)}
+                        className={`${linkClass(link.href!)} ${navFocus}`}
+                      >
+                        {link.label}
+                      </Link>
+                    </motion.div>
                   )
                 )}
-                <div className="flex gap-4 pt-2 border-t border-pupa-gold/15">
-                  <a href="https://www.instagram.com/pupa.restaurant.bar" target="_blank" rel="noopener noreferrer">
-                    <Instagram size={18} className="text-pupa-cream/80" />
+
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.25 }}
+                  className="flex gap-5 pt-4 mt-2 border-t border-pupa-gold/15"
+                >
+                  <a href="https://www.instagram.com/pupa.restaurant.bar" target="_blank" rel="noopener noreferrer" className={navFocus}>
+                    <Instagram size={20} className="text-pupa-cream/80 hover:text-pupa-gold" />
                   </a>
-                  <a href="https://twitter.com/PupaRestaurant" target="_blank" rel="noopener noreferrer">
-                    <Twitter size={18} className="text-pupa-cream/80" />
+                  <a href="https://twitter.com/PupaRestaurant" target="_blank" rel="noopener noreferrer" className={navFocus}>
+                    <Twitter size={20} className="text-pupa-cream/80 hover:text-pupa-gold" />
                   </a>
-                  <a href="https://www.facebook.com/pupa.restaurant" target="_blank" rel="noopener noreferrer">
-                    <Facebook size={18} className="text-pupa-cream/80" />
+                  <a href="https://www.facebook.com/pupa.restaurant" target="_blank" rel="noopener noreferrer" className={navFocus}>
+                    <Facebook size={20} className="text-pupa-cream/80 hover:text-pupa-gold" />
                   </a>
-                </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="mt-5"
+                >
+                  <Link
+                    href="/#reservation"
+                    onClick={() => setIsOpen(false)}
+                    className="block w-full text-center py-3.5 bg-pupa-gold text-pupa-dark font-sans text-xs tracking-widest uppercase hover:bg-pupa-cream transition-colors"
+                  >
+                    Reserve a Table
+                  </Link>
+                </motion.div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
       </nav>
-    </>
+    </header>
   );
 }

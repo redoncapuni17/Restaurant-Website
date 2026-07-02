@@ -1,9 +1,6 @@
 version: "3.9"
 
 services:
-  # ─────────────────────────────────────────
-  # Next.js App (Development)
-  # ─────────────────────────────────────────
   app:
     build:
       context: .
@@ -15,85 +12,7 @@ services:
       - .:/app
       - /app/node_modules
       - /app/.next
-    env_file:
-      - .env.local
     environment:
       - NODE_ENV=development
-      - WATCHPACK_POLLING=true   # Hot reload brenda Docker
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - pupa-network
+      - WATCHPACK_POLLING=true
     restart: unless-stopped
-
-  # ─────────────────────────────────────────
-  # PostgreSQL (Supabase lokalisht)
-  # ─────────────────────────────────────────
-  db:
-    image: postgres:15-alpine
-    container_name: pupa-db
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: pupa_restaurant
-    volumes:
-      - pupa-db-data:/var/lib/postgresql/data
-      - ./supabase-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-    networks:
-      - pupa-network
-    restart: unless-stopped
-
-  # ─────────────────────────────────────────
-  # Supabase Studio (UI për database)
-  # ─────────────────────────────────────────
-  studio:
-    image: supabase/studio:latest
-    container_name: pupa-studio
-    ports:
-      - "3001:3000"
-    environment:
-      SUPABASE_URL: http://kong:8000
-      STUDIO_PG_META_URL: http://meta:8080
-      SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
-      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
-    depends_on:
-      - db
-    networks:
-      - pupa-network
-    restart: unless-stopped
-
-  # ─────────────────────────────────────────
-  # pgAdmin (alternativë e thjeshtë për DB)
-  # ─────────────────────────────────────────
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: pupa-pgadmin
-    ports:
-      - "5050:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@pupa.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    depends_on:
-      - db
-    networks:
-      - pupa-network
-    restart: unless-stopped
-
-# ─────────────────────────────────────────
-# Volumes & Networks
-# ─────────────────────────────────────────
-volumes:
-  pupa-db-data:
-    driver: local
-
-networks:
-  pupa-network:
-    driver: bridge

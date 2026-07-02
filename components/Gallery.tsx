@@ -1,45 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
-import { supabase } from "@/lib/supabase";
-
-interface GalleryImage {
-  url: string;
-  alt: string;
-}
+import { GALLERY_IMAGES } from "@/lib/siteConfig";
 
 export default function Gallery() {
-  const [images, setImages] = useState<GalleryImage[]>([]);
-  const [loading, setLoading] = useState(true);
   const [lightbox, setLightbox] = useState<number | null>(null);
-
-  useEffect(() => {
-    const fetchImages = async () => {
-      const { data } = await supabase
-        .from("gallery_images")
-        .select("url, alt")
-        .order("order");
-      if (data) setImages(data);
-      setLoading(false);
-    };
-    fetchImages();
-  }, []);
+  const images = GALLERY_IMAGES;
 
   const prev = () => setLightbox((i) => (i! - 1 + images.length) % images.length);
   const next = () => setLightbox((i) => (i! + 1) % images.length);
 
-  // Nuk shfaqim asgjë derisa të ngarkohen, dhe as kur s'ka foto nga admini
-  if (loading || images.length === 0) return null;
-
   return (
     <section className="py-28 bg-pupa-brown relative overflow-hidden">
-      {/* Glow smerald dekorativ */}
       <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 w-[50rem] h-[30rem] glow-gold blur-3xl opacity-20 pointer-events-none" />
       <div className="max-w-7xl mx-auto px-6 relative">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -56,11 +33,10 @@ export default function Gallery() {
           <div className="w-16 h-px bg-pupa-gold mx-auto" />
         </motion.div>
 
-        {/* Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {images.map((img, i) => (
             <motion.div
-              key={i}
+              key={img.url}
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
@@ -78,7 +54,6 @@ export default function Gallery() {
                 className="object-cover transition-transform duration-700 group-hover:scale-110"
                 sizes="(max-width: 768px) 50vw, 33vw"
               />
-              {/* Hover overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-pupa-dark/80 via-pupa-dark/0 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end justify-center pb-5">
                 <span className="inline-flex items-center gap-2 text-pupa-cream text-xs tracking-widest uppercase translate-y-2 group-hover:translate-y-0 transition-transform duration-300 font-sans">
                   <span className="w-5 h-px bg-pupa-gold" /> View
@@ -89,7 +64,6 @@ export default function Gallery() {
         </div>
       </div>
 
-      {/* Lightbox */}
       <AnimatePresence>
         {lightbox !== null && (
           <motion.div

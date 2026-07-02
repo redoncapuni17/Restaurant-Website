@@ -62,8 +62,8 @@ const config: Config = {
           "50%": { transform: "translateY(-18px)" },
         },
         glowPulse: {
-          "0%, 100%": { opacity: "0.35", transform: "scale(1)" },
-          "50%": { opacity: "0.6", transform: "scale(1.08)" },
+          "0%, 100%": { opacity: "0.35" },
+          "50%": { opacity: "0.55" },
         },
         gradientX: {
           "0%, 100%": { backgroundPosition: "0% 50%" },
