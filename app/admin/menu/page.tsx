@@ -96,7 +96,7 @@ export default function AdminMenu() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-16 text-pupa-brown/40 font-sans">
-            No {activeCategory} items yet. Click "Add Item" to create one.
+            No {activeCategory} items yet. Click &quot;Add Item&quot; to create one.
           </div>
         ) : (
           <div className="space-y-3">

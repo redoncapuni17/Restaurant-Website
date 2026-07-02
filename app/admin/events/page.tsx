@@ -230,7 +230,7 @@ export default function AdminEvents() {
           </div>
         ) : events.length === 0 ? (
           <div className="text-center py-16 text-pupa-brown/40 font-sans">
-            No events yet. Click "Add Event" to create one.
+            No events yet. Click &quot;Add Event&quot; to create one.
           </div>
         ) : (
           <div className="space-y-4">
