@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Plus, Pencil, Trash2, X, Check, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Check, Loader2 } from "lucide-react";
 import type { MenuItem } from "@/types";
 
 const CATEGORIES = ["starter", "main", "dessert", "drink", "wine"] as const;
@@ -23,8 +22,6 @@ export default function AdminMenu() {
   const [saving, setSaving] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>("main");
   const [modal, setModal] = useState<{ open: boolean; item: Partial<MenuItem> | null }>({ open: false, item: null });
-  const router = useRouter();
-
   useEffect(() => {
     fetchItems();
   }, []);

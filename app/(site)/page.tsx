@@ -23,7 +23,7 @@ export default async function HomePage() {
   return (
     <>
       {heroUrl && (
-        <link rel="preload" as="image" href={heroUrl} fetchPriority="high" />
+        <link rel="preload" as="image" href={heroUrl} />
       )}
       <IntroLoader />
       <Hero initialBgUrl={heroUrl} />
