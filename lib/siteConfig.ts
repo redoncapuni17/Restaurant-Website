@@ -1,5 +1,3 @@
-import type { Event } from "@/types";
-
 /** Local images live in public/images/ — replace files there to update the site. */
 export const SITE_IMAGES = {
   hero: "/images/heroes/home.jpg",
@@ -33,25 +31,3 @@ export const OPENING_HOURS = [
   { day: "Saturday", open_time: "12:00", close_time: "22:00", is_closed: false },
   { day: "Sunday", open_time: "13:30", close_time: "22:00", is_closed: false },
 ];
-
-/** Add upcoming events here. Past dates are filtered out automatically on /events. */
-export const EVENTS: Event[] = [
-  // Example:
-  // {
-  //   id: "valentines-dinner",
-  //   title: "Valentine's Dinner",
-  //   description: "A special evening menu with live music.",
-  //   date: "2026-02-14",
-  //   time_start: "18:00",
-  //   time_end: "22:00",
-  //   image_url: "/images/events/valentines.jpg",
-  //   created_at: "",
-  // },
-];
-
-export function getUpcomingEvents(): Event[] {
-  const today = new Date().toISOString().split("T")[0];
-  return EVENTS.filter((event) => event.date >= today).sort((a, b) =>
-    a.date.localeCompare(b.date)
-  );
-}

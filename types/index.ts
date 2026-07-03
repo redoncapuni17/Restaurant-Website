@@ -6,6 +6,8 @@ export interface Event {
   time_start: string;
   time_end: string;
   image_url?: string;
+  tag?: string;
+  featured?: boolean;
   created_at?: string;
 }
 
