@@ -12,7 +12,7 @@ import {
   PRIVATE_HIRE_HIGHLIGHTS,
   PRIVATE_HIRE_IMAGES,
 } from "@/lib/privateHire";
-import { SITE_IMAGES } from "@/lib/siteConfig";
+import { SITE_CONTACT, SITE_IMAGES } from "@/lib/siteConfig";
 
 export default function PrivateHireView() {
   return (
@@ -20,10 +20,8 @@ export default function PrivateHireView() {
       <PageHero
         eyebrow={PRIVATE_HIRE_CONTENT.heroEyebrow}
         title={PRIVATE_HIRE_CONTENT.heroTitle}
-        subtitle={PRIVATE_HIRE_CONTENT.heroSubtitle}
         cta={{ label: "Enquire Now", href: "#enquire" }}
         backgroundImage={SITE_IMAGES.privateHire}
-        imageOpacity={0.35}
       />
 
       {/* Capacity */}
@@ -38,7 +36,7 @@ export default function PrivateHireView() {
                 <p className="font-serif text-2xl sm:text-3xl text-pupa-brown font-semibold leading-none">
                   {PRIVATE_HIRE_CONTENT.capacity}
                 </p>
-                <p className="font-sans text-pupa-brown/50 text-xs sm:text-sm tracking-wider uppercase mt-2">
+                <p className="font-sans text-pupa-brown/50 text-sm tracking-wider uppercase mt-2">
                   Private dining · NQ, Manchester
                 </p>
               </div>
@@ -55,7 +53,7 @@ export default function PrivateHireView() {
               {PRIVATE_HIRE_CONTENT.roomTitle}
             </h2>
             <div className="w-12 h-px bg-pupa-gold mx-auto mb-5" />
-            <p className="font-sans text-pupa-brown/65 text-sm sm:text-base leading-relaxed">
+            <p className="font-sans text-pupa-brown/65 text-base leading-relaxed">
               {PRIVATE_HIRE_CONTENT.roomDescription}
             </p>
           </FadeIn>
@@ -105,7 +103,7 @@ export default function PrivateHireView() {
       <section className="py-14 sm:py-16 bg-pupa-dark">
         <div className="max-w-6xl mx-auto px-5 sm:px-6">
           <FadeIn className="text-center mb-10">
-            <p className="font-sans text-pupa-gold text-xs tracking-[0.35em] uppercase mb-3">
+            <p className="font-sans text-pupa-gold text-sm tracking-[0.35em] uppercase mb-3">
               What we offer
             </p>
             <h2 className="font-serif text-2xl sm:text-3xl text-pupa-cream font-semibold">
@@ -119,7 +117,7 @@ export default function PrivateHireView() {
                   <h3 className="font-serif text-lg text-pupa-cream font-medium mb-2">
                     {item.title}
                   </h3>
-                  <p className="font-sans text-pupa-warm/65 text-sm leading-relaxed">
+                  <p className="font-sans text-pupa-warm/65 text-base leading-relaxed">
                     {item.description}
                   </p>
                 </div>
@@ -135,44 +133,41 @@ export default function PrivateHireView() {
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-14 items-start">
             <div className="lg:col-span-2">
               <FadeIn>
-                <p className="font-sans text-pupa-gold text-xs tracking-[0.35em] uppercase mb-3">
+                <p className="font-sans text-pupa-gold text-sm tracking-[0.35em] uppercase mb-3">
                   {PRIVATE_HIRE_CONTENT.formEyebrow}
                 </p>
-                <h2 className="font-serif text-2xl sm:text-3xl text-pupa-brown font-semibold leading-tight mb-4">
+                <h2 className="font-serif text-3xl sm:text-4xl text-pupa-brown font-semibold leading-tight mb-4">
                   {PRIVATE_HIRE_CONTENT.formTitle}
                 </h2>
                 <div className="w-12 h-px bg-pupa-gold mb-5" />
-                <p className="font-sans text-pupa-brown/70 text-sm sm:text-base leading-relaxed mb-6">
-                  {PRIVATE_HIRE_CONTENT.formDescription}
-                </p>
-                <div className="space-y-3 font-sans text-sm text-pupa-brown/60">
+                <div className="space-y-3 font-sans text-lg text-pupa-brown/60">
                   <p>
-                    <span className="text-pupa-brown/40 text-xs tracking-wider uppercase block mb-1">
+                    <span className="text-pupa-brown/40 text-sm tracking-wider uppercase block mb-1">
                       Phone
                     </span>
                     <a
-                      href={`tel:${PRIVATE_HIRE_CONTENT.phone.replace(/\s/g, "")}`}
+                      href={SITE_CONTACT.phoneHref}
                       className="text-pupa-brown hover:text-pupa-gold transition-colors"
                     >
-                      {PRIVATE_HIRE_CONTENT.phone}
+                      {SITE_CONTACT.phone}
                     </a>
                   </p>
                   <p>
-                    <span className="text-pupa-brown/40 text-xs tracking-wider uppercase block mb-1">
+                    <span className="text-pupa-brown/40 text-sm tracking-wider uppercase block mb-1">
                       Email
                     </span>
                     <a
-                      href={`mailto:${PRIVATE_HIRE_CONTENT.email}`}
+                      href={SITE_CONTACT.emailHref}
                       className="text-pupa-brown hover:text-pupa-gold transition-colors"
                     >
-                      {PRIVATE_HIRE_CONTENT.email}
+                      {SITE_CONTACT.email}
                     </a>
                   </p>
                   <p>
-                    <span className="text-pupa-brown/40 text-xs tracking-wider uppercase block mb-1">
+                    <span className="text-pupa-brown/40 text-sm tracking-wider uppercase block mb-1">
                       Address
                     </span>
-                    37 Turner Street, Manchester M4 1DW
+                    {SITE_CONTACT.addressOneLine}
                   </p>
                 </div>
               </FadeIn>

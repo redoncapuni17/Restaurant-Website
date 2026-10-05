@@ -1,17 +1,10 @@
-import type { DietaryTag } from "./mainMenu";
-
-export interface LunchMenuItem {
-  name: string;
-  price: string;
-  description?: string;
-  dietary?: DietaryTag[];
-}
+import type { MenuItem } from "./menuTypes";
 
 export interface LunchMenuSection {
   id: string;
   title: string;
   note?: string;
-  items: LunchMenuItem[];
+  items: MenuItem[];
 }
 
 export const SMALL_PLATES_SECTION: LunchMenuSection = {
@@ -109,7 +102,7 @@ export const BIG_PLATES_SECTION: LunchMenuSection = {
   ],
 };
 
-export const LUNCH_ADDONS: LunchMenuItem[] = [
+export const LUNCH_ADDONS: MenuItem[] = [
   { name: "Skin-on Chips", price: "3", dietary: ["V"] },
   { name: "Mediterranean Rice", price: "3", dietary: ["V", "GF"] },
 ];

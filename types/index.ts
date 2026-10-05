@@ -8,7 +8,6 @@ export interface Event {
   image_url?: string;
   tag?: string;
   featured?: boolean;
-  created_at?: string;
 }
 
 export interface OpeningHours {

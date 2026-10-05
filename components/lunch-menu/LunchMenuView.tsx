@@ -1,42 +1,37 @@
-"use client";
-
-import FadeIn from "@/components/motion/FadeIn";
 import PageHero from "@/components/motion/PageHero";
 import {
-  MenuCard,
-  MenuItemRow,
-  MenuNote,
-  MenuPageShell,
-  MenuSectionHeader,
-} from "@/components/menu/MenuLayout";
+  MenuCatalogShell,
+  type CatalogCard,
+} from "@/components/menu/MenuCatalog";
 import {
   BIG_PLATES_SECTION,
   LUNCH_ADDONS,
   LUNCH_MENU_FOOTER,
   SMALL_PLATES_SECTION,
 } from "@/lib/lunchMenu";
-
 import { SITE_IMAGES } from "@/lib/siteConfig";
 
-function LunchSectionCard({ section }: { section: typeof SMALL_PLATES_SECTION }) {
-  return (
-    <MenuCard className="h-full">
-      <h3 className="font-serif text-xl sm:text-2xl text-pupa-brown mb-1">{section.title}</h3>
-      {section.note && <MenuNote>{section.note}</MenuNote>}
-      <div className={section.note ? "" : "mt-4"}>
-        {section.items.map((item) => (
-          <MenuItemRow
-            key={item.name}
-            name={item.name}
-            price={item.price}
-            description={item.description}
-            dietary={item.dietary}
-          />
-        ))}
-      </div>
-    </MenuCard>
-  );
-}
+const LUNCH_CARDS: CatalogCard[] = [
+  {
+    id: SMALL_PLATES_SECTION.id,
+    pillLabel: "Small Plates",
+    title: SMALL_PLATES_SECTION.title,
+    note: SMALL_PLATES_SECTION.note,
+    items: SMALL_PLATES_SECTION.items,
+  },
+  {
+    id: BIG_PLATES_SECTION.id,
+    pillLabel: "Big Plates",
+    title: BIG_PLATES_SECTION.title,
+    items: BIG_PLATES_SECTION.items,
+  },
+  {
+    id: "add",
+    pillLabel: "Add",
+    title: "Add",
+    items: LUNCH_ADDONS,
+  },
+];
 
 export default function LunchMenuView() {
   return (
@@ -48,29 +43,11 @@ export default function LunchMenuView() {
         backgroundImage={SITE_IMAGES.lunch}
       />
 
-      <MenuPageShell footer={LUNCH_MENU_FOOTER}>
-        <FadeIn>
-          <MenuSectionHeader eyebrow="Lunch" title="Small Plates & Big Plates" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-            <LunchSectionCard section={SMALL_PLATES_SECTION} />
-            <LunchSectionCard section={BIG_PLATES_SECTION} />
-          </div>
-        </FadeIn>
-
-        <FadeIn delay={0.06}>
-          <MenuSectionHeader eyebrow="Extras" title="Add" />
-          <MenuCard>
-            {LUNCH_ADDONS.map((item) => (
-              <MenuItemRow
-                key={item.name}
-                name={item.name}
-                price={item.price}
-                dietary={item.dietary}
-              />
-            ))}
-          </MenuCard>
-        </FadeIn>
-      </MenuPageShell>
+      <MenuCatalogShell
+        cards={LUNCH_CARDS}
+        footer={LUNCH_MENU_FOOTER}
+        navLabel="Lunch categories"
+      />
     </>
   );
 }

@@ -1,8 +1,6 @@
-export interface DrinkItem {
-  name: string;
-  price: string;
-  description?: string;
-}
+import type { MenuItem } from "./menuTypes";
+
+export type { MenuItem };
 
 export interface DrinkSection {
   id: string;
@@ -10,7 +8,7 @@ export interface DrinkSection {
   titleStyle: "script" | "serif" | "block";
   note?: string;
   priceNote?: string;
-  items: DrinkItem[];
+  items: MenuItem[];
 }
 
 export const COCKTAIL_SECTIONS: DrinkSection[] = [

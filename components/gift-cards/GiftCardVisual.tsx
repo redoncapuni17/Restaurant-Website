@@ -34,7 +34,7 @@ function OliveSprig({ className = "" }: { className?: string }) {
 function FieldLine({ label, wide = true }: { label: string; wide?: boolean }) {
   return (
     <div className={wide ? "col-span-2" : ""}>
-      <p className="font-sans text-[0.55rem] sm:text-[0.6rem] tracking-[0.25em] uppercase text-pupa-brown/55 mb-1">
+      <p className="font-sans text-xs tracking-[0.25em] uppercase text-pupa-brown/55 mb-1.5">
         {label}
       </p>
       <div className="h-px bg-pupa-brown/20" />
@@ -49,7 +49,7 @@ export default function GiftCardVisual() {
       whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.8, ease: EASE_OUT }}
-      className="relative mx-auto w-full max-w-[22rem] sm:max-w-[24rem]"
+      className="relative mx-auto w-full max-w-[22rem] sm:max-w-[26rem]"
       style={{ perspective: "1000px" }}
     >
       <div className="absolute -inset-4 glow-gold blur-2xl opacity-40 pointer-events-none" />
@@ -70,13 +70,13 @@ export default function GiftCardVisual() {
           <OliveSprig className="absolute -right-2 top-8 w-24 sm:w-28 h-auto text-pupa-accent pointer-events-none" />
 
           <div className="relative z-10 text-center mb-6 sm:mb-7">
-            <p className="font-sans text-[0.55rem] sm:text-[0.6rem] tracking-[0.45em] uppercase text-pupa-brown/60 mb-3">
+            <p className="font-sans text-xs tracking-[0.45em] uppercase text-pupa-brown/60 mb-3">
               Pupa Restaurant &amp; Bar
             </p>
-            <h3 className="font-serif text-4xl sm:text-[2.75rem] text-pupa-brown font-semibold leading-none tracking-wide uppercase">
+            <h3 className="font-serif text-4xl sm:text-5xl text-pupa-brown font-semibold leading-none tracking-wide uppercase">
               Gift Card
             </h3>
-            <p className="font-serif italic text-pupa-accent text-lg sm:text-xl mt-2">
+            <p className="font-serif italic text-pupa-accent text-xl sm:text-2xl mt-2">
               a gift for you
             </p>
             <div className="flex items-center justify-center gap-3 mt-4">
@@ -91,16 +91,16 @@ export default function GiftCardVisual() {
             <FieldLine label="From" />
             <FieldLine label="For (£)" />
             <div>
-              <p className="font-sans text-[0.55rem] sm:text-[0.6rem] tracking-[0.25em] uppercase text-pupa-brown/55 mb-1">
+              <p className="font-sans text-xs tracking-[0.25em] uppercase text-pupa-brown/55 mb-1.5">
                 Expiry Date
               </p>
               <div className="h-px bg-pupa-brown/20" />
-              <p className="font-sans text-[0.5rem] text-pupa-brown/35 mt-1 tracking-wide">
+              <p className="font-sans text-[0.65rem] text-pupa-brown/35 mt-1.5 tracking-wide">
                 (a year from purchase)
               </p>
             </div>
             <div>
-              <p className="font-sans text-[0.55rem] sm:text-[0.6rem] tracking-[0.25em] uppercase text-pupa-brown/55 mb-1">
+              <p className="font-sans text-xs tracking-[0.25em] uppercase text-pupa-brown/55 mb-1.5">
                 Voucher No.
               </p>
               <div className="h-px bg-pupa-brown/20" />
@@ -108,10 +108,10 @@ export default function GiftCardVisual() {
           </div>
 
           <div className="relative z-10 text-center border-t border-pupa-brown/10 pt-4">
-            <p className="font-sans text-[0.55rem] sm:text-[0.6rem] tracking-[0.2em] uppercase text-pupa-brown/50">
+            <p className="font-sans text-xs tracking-[0.2em] uppercase text-pupa-brown/50">
               Mediterranean Charcoal Grill
             </p>
-            <p className="font-sans text-[0.5rem] sm:text-[0.55rem] tracking-[0.15em] uppercase text-pupa-brown/40 mt-1.5 leading-relaxed">
+            <p className="font-sans text-[0.7rem] tracking-[0.15em] uppercase text-pupa-brown/40 mt-1.5 leading-relaxed">
               37 Turner Street, Manchester M4 1DW
               <br />
               www.puparestaurant.com
@@ -124,10 +124,10 @@ export default function GiftCardVisual() {
       </motion.div>
 
       <p className="text-center mt-5 sm:mt-6">
-        <span className="font-serif text-lg sm:text-xl text-pupa-brown font-medium">
+        <span className="font-serif text-xl sm:text-2xl text-pupa-brown font-medium">
           Gift Card
         </span>
-        <span className="block font-sans text-pupa-brown/50 text-sm mt-1">
+        <span className="block font-sans text-pupa-brown/50 text-base mt-1">
           from £25.00
         </span>
       </p>

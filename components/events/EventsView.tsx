@@ -52,7 +52,6 @@ export default function EventsView({ events, heroUrl }: EventsViewProps) {
         eyebrow="What's On"
         title="Events at Pupa"
         backgroundImage={heroUrl}
-        imageOpacity={heroUrl ? 0.35 : 0}
       />
 
       <section className="relative py-14 sm:py-20 bg-pupa-beige overflow-hidden">
@@ -60,10 +59,10 @@ export default function EventsView({ events, heroUrl }: EventsViewProps) {
 
         <div className="relative max-w-6xl mx-auto px-5 sm:px-6">
           <FadeIn className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-            <p className="font-sans text-pupa-gold text-xs tracking-[0.35em] uppercase mb-4">
+            <p className="font-sans text-pupa-gold text-sm tracking-[0.35em] uppercase mb-4">
               Northern Quarter, Manchester
             </p>
-            <p className="font-sans text-pupa-brown/70 text-sm sm:text-base leading-relaxed">
+            <p className="font-sans text-pupa-brown/70 text-base leading-relaxed">
               From live music and wine evenings to supper clubs and chef-led
               tastings — join us for special nights at the grill.
             </p>
@@ -81,7 +80,7 @@ export default function EventsView({ events, heroUrl }: EventsViewProps) {
               <p className="font-serif text-2xl sm:text-3xl text-pupa-brown mb-3">
                 No upcoming events
               </p>
-              <p className="font-sans text-pupa-brown/50 text-sm leading-relaxed">
+              <p className="font-sans text-pupa-brown/50 text-base leading-relaxed">
                 Check back soon for new events and special evenings at PUPA.
               </p>
             </FadeIn>
@@ -95,14 +94,14 @@ export default function EventsView({ events, heroUrl }: EventsViewProps) {
                 <div>
                   <FadeIn className="flex items-end justify-between gap-4 mb-6 sm:mb-8">
                     <div>
-                      <p className="font-sans text-pupa-gold text-xs tracking-[0.3em] uppercase mb-2">
+                      <p className="font-sans text-pupa-gold text-sm tracking-[0.3em] uppercase mb-2">
                         Calendar
                       </p>
                       <h2 className="font-serif text-2xl sm:text-3xl text-pupa-brown font-semibold">
                         More to look forward to
                       </h2>
                     </div>
-                    <p className="hidden sm:block font-sans text-pupa-brown/40 text-xs tracking-wider uppercase">
+                    <p className="hidden sm:block font-sans text-pupa-brown/40 text-sm tracking-wider uppercase">
                       {rest.length} upcoming
                     </p>
                   </FadeIn>
@@ -116,41 +115,6 @@ export default function EventsView({ events, heroUrl }: EventsViewProps) {
               )}
             </>
           )}
-        </div>
-      </section>
-
-      <section className="bg-pupa-dark py-14 sm:py-16">
-        <div className="max-w-6xl mx-auto px-5 sm:px-6">
-          <FadeIn className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
-            <div className="max-w-lg">
-              <p className="font-sans text-pupa-gold text-xs tracking-[0.35em] uppercase mb-3">
-                Private Hire
-              </p>
-              <h2 className="font-serif text-2xl sm:text-3xl text-pupa-cream font-semibold mb-3">
-                Planning something bigger?
-              </h2>
-              <p className="font-sans text-pupa-warm/70 text-sm leading-relaxed">
-                Birthdays, corporate dinners, or a full venue hire — we&apos;ll
-                tailor the evening to your group.
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 shrink-0">
-              <Link
-                href="/private-hire"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 border border-pupa-warm/30 text-pupa-cream font-sans text-xs tracking-[0.18em] uppercase hover:border-pupa-gold hover:text-pupa-gold transition-colors"
-              >
-                Private Hire
-                <ArrowRight size={14} />
-              </Link>
-              <Link
-                href="/#reservation"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-pupa-gold text-pupa-dark font-sans text-xs tracking-[0.18em] uppercase hover:bg-pupa-cream transition-colors"
-              >
-                Book a Table
-                <ArrowRight size={14} />
-              </Link>
-            </div>
-          </FadeIn>
         </div>
       </section>
     </>
@@ -209,23 +173,23 @@ function FeaturedEventCard({
           </h2>
 
           <div className="flex flex-wrap gap-4 mb-5 text-pupa-warm/80">
-            <span className="inline-flex items-center gap-2 font-sans text-xs tracking-wide">
+            <span className="inline-flex items-center gap-2 font-sans text-sm tracking-wide">
               <CalendarDays size={14} className="text-pupa-gold shrink-0" />
               {date.weekday}, {date.full}
             </span>
-            <span className="inline-flex items-center gap-2 font-sans text-xs tracking-wide">
+            <span className="inline-flex items-center gap-2 font-sans text-sm tracking-wide">
               <Clock size={14} className="text-pupa-gold shrink-0" />
               {formatTime(event.time_start)} – {formatTime(event.time_end)}
             </span>
           </div>
 
-          <p className="font-sans text-pupa-warm/75 text-sm sm:text-base leading-relaxed mb-8 line-clamp-4">
+          <p className="font-sans text-pupa-warm/75 text-base leading-relaxed mb-8 line-clamp-4">
             {event.description}
           </p>
 
           <Link
             href="/#reservation"
-            className="inline-flex items-center justify-center sm:justify-start gap-2 w-full sm:w-auto px-7 py-3.5 bg-pupa-gold text-pupa-dark font-sans text-xs tracking-[0.18em] uppercase hover:bg-pupa-cream transition-colors"
+            className="inline-flex items-center justify-center sm:justify-start gap-2 w-full sm:w-auto px-7 py-3.5 bg-pupa-gold text-pupa-dark font-sans text-sm tracking-[0.18em] uppercase hover:bg-pupa-cream transition-colors"
           >
             Reserve Your Spot
             <ArrowRight size={14} />
@@ -291,11 +255,11 @@ function EventCard({ event, index }: { event: Event; index: number }) {
       </div>
 
       <div className="flex flex-col flex-1 p-5 sm:p-6">
-        <h3 className="font-serif text-xl sm:text-2xl text-pupa-brown font-semibold leading-snug mb-2 group-hover:text-pupa-accent transition-colors">
+        <h3 className="font-serif text-2xl sm:text-3xl text-pupa-brown font-semibold leading-snug mb-2 group-hover:text-pupa-accent transition-colors">
           {event.title}
         </h3>
 
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-3 font-sans text-pupa-brown/50 text-xs">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-3 font-sans text-pupa-brown/50 text-sm">
           <span className="inline-flex items-center gap-1">
             <Clock size={12} className="text-pupa-gold" />
             {formatTime(event.time_start)} – {formatTime(event.time_end)}
@@ -303,7 +267,7 @@ function EventCard({ event, index }: { event: Event; index: number }) {
           <span>{date.weekday}</span>
         </div>
 
-        <p className="font-sans text-pupa-brown/65 text-sm leading-relaxed mb-5 line-clamp-3 flex-1">
+        <p className="font-sans text-pupa-brown/65 text-base leading-relaxed mb-5 line-clamp-3 flex-1">
           {event.description}
         </p>
 
@@ -314,7 +278,7 @@ function EventCard({ event, index }: { event: Event; index: number }) {
           </span>
           <Link
             href="/#reservation"
-            className="inline-flex items-center gap-1.5 font-sans text-pupa-brown text-xs tracking-[0.15em] uppercase hover:text-pupa-gold transition-colors"
+            className="inline-flex items-center gap-1.5 font-sans text-pupa-brown text-sm tracking-[0.15em] uppercase hover:text-pupa-gold transition-colors"
           >
             Book
             <ArrowRight size={13} />

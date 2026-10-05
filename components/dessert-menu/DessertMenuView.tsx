@@ -1,22 +1,49 @@
-"use client";
-
-import FadeIn from "@/components/motion/FadeIn";
 import PageHero from "@/components/motion/PageHero";
 import {
-  MenuCard,
-  MenuItemRow,
-  MenuPageShell,
-  MenuSectionHeader,
-  MenuSubsection,
-} from "@/components/menu/MenuLayout";
+  MenuCatalogShell,
+  type CatalogCard,
+} from "@/components/menu/MenuCatalog";
 import {
   ALCOHOLIC_COFFEE_ITEMS,
   COFFEE_ITEMS,
   DESSERT_ITEMS,
   DESSERT_WINE_ITEMS,
 } from "@/lib/dessertMenu";
-
 import { SITE_IMAGES } from "@/lib/siteConfig";
+
+const DESSERT_CARDS: CatalogCard[] = [
+  {
+    id: "desserts",
+    pillLabel: "Desserts",
+    title: "Desserts",
+    intro: "All desserts are homemade.",
+    items: DESSERT_ITEMS,
+  },
+  {
+    id: "coffee",
+    pillLabel: "Coffee",
+    title: "Coffee & Tea",
+    items: COFFEE_ITEMS,
+  },
+  {
+    id: "alcoholic-coffee",
+    pillLabel: "Spirited",
+    title: "Alcoholic Coffees",
+    items: ALCOHOLIC_COFFEE_ITEMS,
+  },
+  {
+    id: "dessert-wines",
+    pillLabel: "Wines",
+    title: "Dessert Wines",
+    dualPriceHeaders: ["50ml", "Bottle"],
+    items: DESSERT_WINE_ITEMS.map((item) => ({
+      name: item.name,
+      price: item.price || undefined,
+      priceSecondary: item.priceSecondary,
+      description: item.description,
+    })),
+  },
+];
 
 export default function DessertMenuView() {
   return (
@@ -27,66 +54,11 @@ export default function DessertMenuView() {
         backgroundImage={SITE_IMAGES.dessert}
       />
 
-      <MenuPageShell footer="All prices in GBP (£). Please inform staff of any allergies.">
-        <FadeIn>
-          <MenuSectionHeader
-            eyebrow="Homemade"
-            title="Desserts"
-          />
-          <MenuCard>
-            <p className="font-sans text-pupa-brown/60 text-sm mb-5 sm:mb-6">
-              All desserts are homemade.
-            </p>
-            {DESSERT_ITEMS.map((item) => (
-              <MenuItemRow
-                key={item.name}
-                name={item.name}
-                price={item.price}
-                description={item.description}
-              />
-            ))}
-          </MenuCard>
-        </FadeIn>
-
-        <FadeIn delay={0.05}>
-          <MenuSectionHeader eyebrow="To Finish" title="Coffee & More" />
-          <MenuCard>
-            <MenuSubsection title="Coffee & Tea">
-              {COFFEE_ITEMS.map((item) => (
-                <MenuItemRow
-                  key={item.name}
-                  name={item.name}
-                  price={item.price}
-                  description={item.description}
-                />
-              ))}
-            </MenuSubsection>
-
-            <MenuSubsection title="Alcoholic Coffees" showDivider>
-              {ALCOHOLIC_COFFEE_ITEMS.map((item) => (
-                <MenuItemRow
-                  key={item.name}
-                  name={item.name}
-                  price={item.price}
-                />
-              ))}
-            </MenuSubsection>
-
-            <MenuSubsection title="Dessert Wines" priceNote="50ml / Bottle" showDivider>
-              {DESSERT_WINE_ITEMS.map((item) => (
-                <MenuItemRow
-                  key={item.name}
-                  name={item.name}
-                  price={item.price}
-                  priceBottle={item.priceBottle}
-                  description={item.description}
-                  showBottleColumns
-                />
-              ))}
-            </MenuSubsection>
-          </MenuCard>
-        </FadeIn>
-      </MenuPageShell>
+      <MenuCatalogShell
+        cards={DESSERT_CARDS}
+        footer="All prices in GBP (£). Please inform staff of any allergies."
+        navLabel="Dessert categories"
+      />
     </>
   );
 }

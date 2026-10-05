@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --pupa-cream: #f5f2ea;
-  --pupa-beige: #f1efe7;
-  --pupa-brown: #0f2c22;
-  --pupa-dark: #080b09;
-  --pupa-gold: #46a87f;
-  --pupa-warm: #aebcad;
-  --pupa-accent: #2c7a59;
-  --pupa-champagne: #d8c7a2;
+  --pupa-cream: #fbf0e4;
+  --pupa-beige: #f5dec4;
+  --pupa-brown: #3d2a1f;
+  --pupa-dark: #1a1410;
+  --pupa-gold: #b8956c;
+  --pupa-warm: #7a6352;
+  --pupa-accent: #8f6b45;
+  --pupa-champagne: #e8d4b8;
 }
 
 * {
@@ -19,7 +19,8 @@
 
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
+  /* clip (not hidden) — overflow-x: hidden breaks position:sticky */
+  overflow-x: clip;
   scrollbar-gutter: stable;
 }
 
@@ -29,7 +30,7 @@ body {
   font-family: var(--font-inter), "Inter", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
 }
 
@@ -58,49 +59,29 @@ button:focus:not(:focus-visible) {
   border-radius: 3px;
 }
 
-/* Loading skeleton animation */
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    #dfe3da 25%,
-    #f1efe7 50%,
-    #dfe3da 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-/* Parallax helper */
-.parallax-img {
-  will-change: transform;
-  transform: translateZ(0);
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
 
-  /* Tekst me gradient luksoz — smerald → champagne (për tituj premium) */
+  /* Tekst me gradient luksoz — bronze → cream (për tituj premium) */
   .text-gold-gradient {
     background: linear-gradient(
       120deg,
-      #2c7a59 0%,
-      #46a87f 26%,
-      #e6dcc0 50%,
-      #46a87f 74%,
-      #2c7a59 100%
+      #8f6b45 0%,
+      #b8956c 26%,
+      #fbf0e4 50%,
+      #b8956c 74%,
+      #8f6b45 100%
     );
-    background-size: 200% auto;
+    background-size: 100% auto;
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
+    /* Italic + clip shpesh pret shkronjën e fundit */
+    padding-right: 0.12em;
+    padding-bottom: 0.06em;
   }
 
   /* Teksturë "grain" delikate për thellësi sipër fotos */
@@ -108,12 +89,12 @@ button:focus:not(:focus-visible) {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
   }
 
-  /* Glow smerald radial */
+  /* Glow warm bronze radial */
   .glow-gold {
     background: radial-gradient(
       circle at center,
-      rgba(70, 168, 127, 0.5) 0%,
-      rgba(70, 168, 127, 0.16) 35%,
+      rgba(184, 149, 108, 0.5) 0%,
+      rgba(184, 149, 108, 0.16) 35%,
       transparent 70%
     );
   }

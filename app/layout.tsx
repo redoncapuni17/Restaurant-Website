@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 
@@ -41,10 +42,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${cormorant.variable}`}>
       <head>
-        <link rel="dns-prefetch" href="https://booking.resdiary.com" />
-        <link rel="preconnect" href="https://booking.resdiary.com" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://tablego.uk" />
+        <link rel="preconnect" href="https://tablego.uk" crossOrigin="" />
       </head>
-      <body>{children}</body>
+      <body>
+        <Script id="reload-scroll-top" strategy="beforeInteractive">
+          {`try{var n=performance.getEntriesByType("navigation")[0];if(n&&n.type==="reload"){if("scrollRestoration"in history)history.scrollRestoration="manual";var top=function(){if(location.hash)return;var h=document.documentElement;var p=h.style.scrollBehavior;h.style.scrollBehavior="auto";scrollTo(0,0);h.style.scrollBehavior=p;};top();addEventListener("pageshow",top);addEventListener("load",function(){top();setTimeout(function(){if("scrollRestoration"in history)history.scrollRestoration="auto";},150);});}}catch(e){}`}
+        </Script>
+        {children}
+      </body>
     </html>
   );
 }

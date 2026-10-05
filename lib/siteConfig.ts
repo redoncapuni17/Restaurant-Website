@@ -1,3 +1,5 @@
+import type { OpeningHours } from "@/types";
+
 /** Local images live in public/images/ — replace files there to update the site. */
 export const SITE_IMAGES = {
   hero: "/images/heroes/home.jpg",
@@ -22,7 +24,35 @@ export const ABOUT_IMAGES = [
   { key: "about_3", url: SITE_IMAGES.about3, alt: "Mediterranean dining at Pupa" },
 ];
 
-export const OPENING_HOURS = [
+export const SITE_CONTACT = {
+  name: "Pupa Restaurant & Bar",
+  phone: "0161 400 4830",
+  phoneHref: "tel:01614004830",
+  email: "info@puparestaurant.com",
+  emailHref: "mailto:info@puparestaurant.com",
+  addressLine1: "37 Turner Street,",
+  addressLine2: "Manchester, NQ, M4 1DW",
+  addressOneLine: "37 Turner Street, Manchester M4 1DW",
+  website: "https://www.puparestaurant.com",
+  websiteLabel: "www.puparestaurant.com",
+} as const;
+
+export const SITE_SOCIAL = [
+  {
+    href: "https://www.instagram.com/pupa.restaurant.bar",
+    label: "Instagram",
+  },
+  {
+    href: "https://twitter.com/PupaRestaurant",
+    label: "Twitter",
+  },
+  {
+    href: "https://www.facebook.com/pupa.restaurant",
+    label: "Facebook",
+  },
+] as const;
+
+export const OPENING_HOURS: OpeningHours[] = [
   { day: "Monday", open_time: "17:00", close_time: "22:00", is_closed: false },
   { day: "Tuesday", open_time: null, close_time: null, is_closed: true },
   { day: "Wednesday", open_time: "17:00", close_time: "22:00", is_closed: false },

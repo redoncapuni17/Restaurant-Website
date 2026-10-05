@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { ABOUT_IMAGES } from "@/lib/siteConfig";
+import { EASE_OUT } from "@/components/motion/constants";
 
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -24,40 +25,53 @@ export default function About() {
             viewport={{ once: true }}
             transition={{ duration: 0.9 }}
           >
-            <p className="font-sans text-pupa-gold text-xs tracking-[0.4em] uppercase mb-4">
+            <p className="font-sans text-pupa-gold text-sm tracking-[0.4em] uppercase mb-4">
               Our Story
             </p>
-            <h2 className="font-serif text-5xl md:text-6xl text-pupa-ink font-semibold leading-[1.05] mb-6">
+            <h2 className="font-serif text-5xl md:text-6xl lg:text-7xl text-pupa-ink font-semibold leading-[1.05] mb-6">
               Fire, Flavour &<br />
-              <span className="italic font-medium text-gold-gradient">Mediterranean Soul</span>
+              Mediterranean Soul
             </h2>
             <div className="w-16 h-px bg-pupa-gold mb-8" />
-            <p className="font-sans text-pupa-ink/70 leading-relaxed mb-6">
+            <p className="font-sans text-pupa-ink/70 text-base md:text-lg leading-relaxed mb-6">
               At Pupa, we believe great food begins with great fire. Our charcoal
               grill imparts a depth of flavour that cannot be replicated — smoky,
               rich, and unmistakably Mediterranean.
             </p>
-            <p className="font-sans text-pupa-ink/70 leading-relaxed mb-10">
+            <p className="font-sans text-pupa-ink/70 text-base md:text-lg leading-relaxed mb-10">
               Every cut of meat is carefully marinated with our signature blends,
               slow-rested, and grilled to perfection. From our intimate dining room
               in the heart of Manchester&apos;s Northern Quarter, we bring the warmth
               of the Mediterranean to your table.
             </p>
-            <div className="flex gap-8">
-              <div>
-                <p className="font-serif text-4xl text-pupa-brown font-semibold">5+</p>
-                <p className="font-sans text-xs text-pupa-ink/50 tracking-wider uppercase mt-1">Years serving</p>
-              </div>
-              <div className="w-px bg-pupa-gold/30" />
-              <div>
-                <p className="font-serif text-4xl text-pupa-brown font-semibold">100%</p>
-                <p className="font-sans text-xs text-pupa-ink/50 tracking-wider uppercase mt-1">Charcoal grilled</p>
-              </div>
-              <div className="w-px bg-pupa-gold/30" />
-              <div>
-                <p className="font-serif text-4xl text-pupa-brown font-semibold">NQ</p>
-                <p className="font-sans text-xs text-pupa-ink/50 tracking-wider uppercase mt-1">Manchester</p>
-              </div>
+            <div className="flex items-stretch gap-0">
+              {[
+                { value: "5+", label: "Years serving" },
+                { value: "100%", label: "Charcoal grilled" },
+                { value: "NQ", label: "Manchester" },
+              ].map((stat, i) => (
+                <motion.div
+                  key={stat.label}
+                  className={`flex items-center ${i > 0 ? "pl-8 ml-8 border-l border-pupa-gold/30" : ""}`}
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: 0.5,
+                    delay: 0.35 + i * 0.1,
+                    ease: EASE_OUT,
+                  }}
+                >
+                  <div>
+                    <p className="font-serif text-4xl text-pupa-brown font-semibold">
+                      {stat.value}
+                    </p>
+                    <p className="font-sans text-sm text-pupa-ink/50 tracking-wider uppercase mt-1">
+                      {stat.label}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </motion.div>
 

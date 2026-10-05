@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
@@ -17,11 +17,17 @@ const PREVIEW_STAGGER = 0.14;
 const BATCH_STAGGER = 0.12;
 const TILE_DURATION = 0.85;
 
+const FOCUSABLE =
+  'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 export default function Gallery() {
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [extraPool, setExtraPool] = useState<GalleryImage[] | null>(null);
   const [extraVisibleCount, setExtraVisibleCount] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const lastFocusRef = useRef<HTMLElement | null>(null);
 
   const displayed = useMemo(() => {
     const extra = extraPool ? extraPool.slice(0, extraVisibleCount) : [];
@@ -37,6 +43,22 @@ export default function Gallery() {
 
   const hasMore = extraVisibleCount < GALLERY_EXTRA_COUNT;
   const hasExtras = extraVisibleCount > 0;
+
+  const closeLightbox = useCallback(() => setLightbox(null), []);
+
+  const prev = useCallback(
+    () =>
+      setLightbox((i) =>
+        i === null ? i : (i - 1 + displayed.length) % displayed.length
+      ),
+    [displayed.length]
+  );
+
+  const next = useCallback(
+    () =>
+      setLightbox((i) => (i === null ? i : (i + 1) % displayed.length)),
+    [displayed.length]
+  );
 
   const handleLoadMore = useCallback(async () => {
     if (loadingMore || !hasMore) return;
@@ -62,10 +84,60 @@ export default function Gallery() {
     setLightbox(null);
   }, []);
 
-  const prev = () =>
-    setLightbox((i) => (i! - 1 + displayed.length) % displayed.length);
-  const next = () =>
-    setLightbox((i) => (i! + 1) % displayed.length);
+  // Scroll lock + focus management while lightbox is open
+  useEffect(() => {
+    if (lightbox === null) return;
+
+    lastFocusRef.current = document.activeElement as HTMLElement | null;
+    const prevOverflow = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+
+    const focusTimer = window.setTimeout(() => {
+      closeBtnRef.current?.focus();
+    }, 0);
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closeLightbox();
+        return;
+      }
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        prev();
+        return;
+      }
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        next();
+        return;
+      }
+      if (e.key !== "Tab" || !dialogRef.current) return;
+
+      const focusable = Array.from(
+        dialogRef.current.querySelectorAll<HTMLElement>(FOCUSABLE)
+      ).filter((el) => !el.hasAttribute("disabled"));
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.clearTimeout(focusTimer);
+      document.removeEventListener("keydown", onKeyDown);
+      document.documentElement.style.overflow = prevOverflow;
+      lastFocusRef.current?.focus();
+    };
+  }, [lightbox, closeLightbox, prev, next]);
 
   return (
     <section className="py-24 sm:py-28 bg-pupa-brown relative isolate overflow-hidden">
@@ -78,10 +150,10 @@ export default function Gallery() {
           transition={{ duration: 0.75, ease: EASE_OUT }}
           className="text-center md:text-left mb-10 sm:mb-12"
         >
-          <p className="font-sans text-pupa-champagne text-xs tracking-[0.4em] uppercase mb-4">
+          <p className="font-sans text-pupa-champagne text-sm tracking-[0.4em] uppercase mb-4">
             Our World
           </p>
-          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl text-pupa-cream font-semibold mb-4">
+          <h2 className="font-serif text-5xl sm:text-6xl md:text-7xl text-pupa-cream font-semibold mb-4">
             Gallery
           </h2>
           <div className="w-16 h-px bg-pupa-gold mx-auto md:mx-0 mb-4" />
@@ -90,7 +162,7 @@ export default function Gallery() {
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, ease: EASE_OUT }}
-            className="font-sans text-pupa-warm/60 text-xs sm:text-sm"
+            className="font-sans text-pupa-warm/60 text-sm sm:text-base"
           >
             Showing {displayed.length} of {GALLERY_TOTAL} photos
           </motion.p>
@@ -148,20 +220,27 @@ export default function Gallery() {
       <AnimatePresence>
         {lightbox !== null && (
           <motion.div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={displayed[lightbox]?.alt || "Gallery image"}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-pupa-dark/95 flex items-center justify-center p-4"
-            onClick={() => setLightbox(null)}
+            onClick={closeLightbox}
           >
             <button
-              onClick={() => setLightbox(null)}
+              ref={closeBtnRef}
+              type="button"
+              onClick={closeLightbox}
               className="absolute top-6 right-6 text-pupa-cream hover:text-pupa-gold"
               aria-label="Close gallery"
             >
               <X size={28} />
             </button>
             <button
+              type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 prev();
@@ -184,6 +263,7 @@ export default function Gallery() {
               />
             </div>
             <button
+              type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 next();
@@ -217,6 +297,7 @@ function GalleryTile({
 }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const shouldAnimate = isPreview || isNewInBatch;
+  const priority = isPreview && index < 2;
 
   const tile = (
     <button
@@ -229,17 +310,16 @@ function GalleryTile({
           imageLoaded ? "opacity-0" : "opacity-100"
         }`}
       />
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <Image
         src={img.url}
         alt={img.alt}
-        loading={isPreview && index < 2 ? "eager" : "lazy"}
-        decoding="async"
+        fill
+        priority={priority}
+        sizes="(max-width: 768px) 50vw, 33vw"
         onLoad={() => setImageLoaded(true)}
-        className={`absolute inset-0 w-full h-full object-cover transition-[opacity,transform] duration-700 ease-out group-hover:scale-105 ${
+        className={`object-cover transition-[opacity,transform] duration-700 ease-out group-hover:scale-105 ${
           imageLoaded ? "opacity-100" : "opacity-0"
         }`}
-        style={{ transform: "translateZ(0)" }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-pupa-dark/80 via-pupa-dark/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-5 pointer-events-none">
         <span className="inline-flex items-center gap-2 text-pupa-cream text-xs tracking-widest uppercase font-sans">

@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { CheckCircle2, Loader2, Send } from "lucide-react";
 import {
@@ -8,20 +9,32 @@ import {
 } from "@/app/actions/privateHireEnquiry";
 import {
   DINING_STYLE_OPTIONS,
-  PRIVATE_HIRE_CONTENT,
 } from "@/lib/privateHire";
+import { SITE_CONTACT } from "@/lib/siteConfig";
 
 const initialState: PrivateHireFormState = { ok: false, message: "" };
 
 const inputClass =
-  "w-full px-4 py-3 bg-pupa-beige/50 border border-pupa-brown/10 rounded-sm font-sans text-sm text-pupa-brown placeholder:text-pupa-brown/35 focus:outline-none focus:border-pupa-gold focus:ring-1 focus:ring-pupa-gold/30 transition-colors";
+  "w-full px-4 py-3.5 bg-pupa-beige/50 border border-pupa-brown/10 rounded-sm font-sans text-base text-pupa-brown placeholder:text-pupa-brown/35 focus:outline-none focus:border-pupa-gold focus:ring-1 focus:ring-pupa-gold/30 transition-colors";
 
 const labelClass =
-  "block font-sans text-xs tracking-[0.15em] uppercase text-pupa-brown/70 mb-2";
+  "block font-sans text-sm tracking-[0.15em] uppercase text-pupa-brown/70 mb-2";
 
-function FieldError({ message }: { message?: string }) {
+function todayLocalISO() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null;
-  return <p className="mt-1.5 font-sans text-xs text-red-700/80">{message}</p>;
+  return (
+    <p id={id} className="mt-1.5 font-sans text-sm text-red-700/80">
+      {message}
+    </p>
+  );
 }
 
 function SubmitButton() {
@@ -30,7 +43,7 @@ function SubmitButton() {
     <button
       type="submit"
       disabled={pending}
-      className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-3.5 bg-pupa-brown text-pupa-cream font-sans text-xs tracking-[0.2em] uppercase rounded-sm hover:bg-pupa-dark transition-colors disabled:opacity-60"
+      className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-3.5 bg-pupa-brown text-pupa-cream font-sans text-sm tracking-[0.2em] uppercase rounded-sm hover:bg-pupa-dark transition-colors disabled:opacity-60"
     >
       {pending ? (
         <>
@@ -49,7 +62,15 @@ function SubmitButton() {
 
 export default function PrivateHireForm() {
   const [state, formAction] = useFormState(submitPrivateHireEnquiry, initialState);
+  const [formStartedAt] = useState(() => Date.now());
   const errors = state.fieldErrors ?? {};
+  const values = state.values;
+  const minDate = useMemo(() => todayLocalISO(), []);
+
+  // Remount after each response so defaultValue/defaultChecked restore submitted values
+  const formKey = state.values
+    ? `retry-${state.message}-${JSON.stringify(state.values)}`
+    : "fresh";
 
   if (state.ok) {
     return (
@@ -57,10 +78,10 @@ export default function PrivateHireForm() {
         <div className="w-14 h-14 mx-auto mb-5 rounded-full bg-pupa-gold/15 flex items-center justify-center">
           <CheckCircle2 className="text-pupa-gold" size={28} strokeWidth={1.5} />
         </div>
-        <h3 className="font-serif text-2xl text-pupa-brown font-semibold mb-3">
+        <h3 className="font-serif text-3xl text-pupa-brown font-semibold mb-3">
           Enquiry sent
         </h3>
-        <p className="font-sans text-pupa-brown/65 text-sm leading-relaxed max-w-sm mx-auto">
+        <p className="font-sans text-pupa-brown/65 text-base leading-relaxed max-w-sm mx-auto">
           {state.message}
         </p>
       </div>
@@ -69,10 +90,24 @@ export default function PrivateHireForm() {
 
   return (
     <form
+      key={formKey}
       action={formAction}
-      className="rounded-xl bg-white ring-1 ring-pupa-brown/8 p-6 sm:p-8 shadow-[0_16px_50px_-24px_rgba(15,44,34,0.35)]"
+      className="relative rounded-xl bg-white ring-1 ring-pupa-brown/8 p-6 sm:p-8 shadow-[0_16px_50px_-24px_rgba(15,44,34,0.35)]"
       noValidate
     >
+      {/* Honeypot — hidden from people, filled by many bots */}
+      <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+        <label htmlFor="company_website">Company website</label>
+        <input
+          id="company_website"
+          name="company_website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
+      <input type="hidden" name="formStartedAt" value={String(formStartedAt)} />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
         <div>
           <label htmlFor="firstName" className={labelClass}>
@@ -83,10 +118,12 @@ export default function PrivateHireForm() {
             name="firstName"
             type="text"
             autoComplete="given-name"
+            defaultValue={values?.firstName ?? ""}
             className={inputClass}
             aria-invalid={!!errors.firstName}
+            aria-describedby={errors.firstName ? "firstName-error" : undefined}
           />
-          <FieldError message={errors.firstName} />
+          <FieldError id="firstName-error" message={errors.firstName} />
         </div>
 
         <div>
@@ -98,10 +135,12 @@ export default function PrivateHireForm() {
             name="lastName"
             type="text"
             autoComplete="family-name"
+            defaultValue={values?.lastName ?? ""}
             className={inputClass}
             aria-invalid={!!errors.lastName}
+            aria-describedby={errors.lastName ? "lastName-error" : undefined}
           />
-          <FieldError message={errors.lastName} />
+          <FieldError id="lastName-error" message={errors.lastName} />
         </div>
 
         <div className="sm:col-span-2">
@@ -113,17 +152,20 @@ export default function PrivateHireForm() {
             name="email"
             type="email"
             autoComplete="email"
+            defaultValue={values?.email ?? ""}
             className={inputClass}
             aria-invalid={!!errors.email}
+            aria-describedby={errors.email ? "email-error" : undefined}
           />
-          <FieldError message={errors.email} />
+          <FieldError id="email-error" message={errors.email} />
           <label className="mt-3 flex items-start gap-3 cursor-pointer group">
             <input
               type="checkbox"
               name="newsletter"
+              defaultChecked={values?.newsletter ?? false}
               className="mt-0.5 h-4 w-4 rounded border-pupa-brown/20 text-pupa-gold focus:ring-pupa-gold/30"
             />
-            <span className="font-sans text-sm text-pupa-brown/60 group-hover:text-pupa-brown/80 transition-colors">
+            <span className="font-sans text-base text-pupa-brown/60 group-hover:text-pupa-brown/80 transition-colors">
               Sign up for news and updates from Pupa
             </span>
           </label>
@@ -138,6 +180,7 @@ export default function PrivateHireForm() {
             name="phone"
             type="tel"
             autoComplete="tel"
+            defaultValue={values?.phone ?? ""}
             className={inputClass}
           />
         </div>
@@ -153,9 +196,10 @@ export default function PrivateHireForm() {
                 <input
                   type="checkbox"
                   name={`style_${option}`}
+                  defaultChecked={values?.diningStyles.includes(option) ?? false}
                   className="h-4 w-4 rounded border-pupa-brown/20 text-pupa-gold focus:ring-pupa-gold/30"
                 />
-                <span className="font-sans text-sm text-pupa-brown/75">{option}</span>
+                <span className="font-sans text-base text-pupa-brown/75">{option}</span>
               </label>
             ))}
           </div>
@@ -169,10 +213,13 @@ export default function PrivateHireForm() {
             id="preferredDate"
             name="preferredDate"
             type="date"
+            min={minDate}
+            defaultValue={values?.preferredDate ?? ""}
             className={inputClass}
             aria-invalid={!!errors.preferredDate}
+            aria-describedby={errors.preferredDate ? "preferredDate-error" : undefined}
           />
-          <FieldError message={errors.preferredDate} />
+          <FieldError id="preferredDate-error" message={errors.preferredDate} />
         </div>
 
         <div>
@@ -183,9 +230,10 @@ export default function PrivateHireForm() {
             id="preferredTime"
             name="preferredTime"
             type="time"
+            defaultValue={values?.preferredTime ?? ""}
             className={inputClass}
           />
-          <p className="mt-1.5 font-sans text-[0.65rem] text-pupa-brown/40">
+          <p className="mt-1.5 font-sans text-sm text-pupa-brown/40">
             Times are in UK local time (GMT/BST)
           </p>
         </div>
@@ -200,10 +248,12 @@ export default function PrivateHireForm() {
             type="number"
             min={1}
             max={80}
+            defaultValue={values?.guests ?? ""}
             className={inputClass}
             aria-invalid={!!errors.guests}
+            aria-describedby={errors.guests ? "guests-error" : undefined}
           />
-          <FieldError message={errors.guests} />
+          <FieldError id="guests-error" message={errors.guests} />
         </div>
 
         <div>
@@ -215,10 +265,12 @@ export default function PrivateHireForm() {
             name="budget"
             type="text"
             placeholder="e.g. £45"
+            defaultValue={values?.budget ?? ""}
             className={inputClass}
             aria-invalid={!!errors.budget}
+            aria-describedby={errors.budget ? "budget-error" : undefined}
           />
-          <FieldError message={errors.budget} />
+          <FieldError id="budget-error" message={errors.budget} />
         </div>
 
         <div className="sm:col-span-2">
@@ -231,27 +283,29 @@ export default function PrivateHireForm() {
             rows={5}
             className={`${inputClass} resize-y min-h-[8rem]`}
             placeholder="Tell us about your occasion, dietary requirements, or anything else we should know…"
+            defaultValue={values?.message ?? ""}
             aria-invalid={!!errors.message}
+            aria-describedby={errors.message ? "message-error" : undefined}
           />
-          <FieldError message={errors.message} />
+          <FieldError id="message-error" message={errors.message} />
         </div>
       </div>
 
       {state.message && !state.ok && (
-        <p className="mt-5 font-sans text-sm text-red-700/80 leading-relaxed" role="alert">
+        <p className="mt-5 font-sans text-base text-red-700/80 leading-relaxed" role="alert">
           {state.message}
         </p>
       )}
 
       <div className="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <SubmitButton />
-        <p className="font-sans text-xs text-pupa-brown/45 leading-relaxed">
+        <p className="font-sans text-sm text-pupa-brown/45 leading-relaxed">
           Or call{" "}
           <a
-            href={`tel:${PRIVATE_HIRE_CONTENT.phone.replace(/\s/g, "")}`}
+            href={SITE_CONTACT.phoneHref}
             className="text-pupa-brown hover:text-pupa-gold transition-colors"
           >
-            {PRIVATE_HIRE_CONTENT.phone}
+            {SITE_CONTACT.phone}
           </a>
         </p>
       </div>

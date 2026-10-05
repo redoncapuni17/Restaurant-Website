@@ -1,47 +1,136 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { ArrowRight, Leaf } from "lucide-react";
 import PageHero from "@/components/motion/PageHero";
 import FadeIn from "@/components/motion/FadeIn";
 import { EASE_OUT } from "@/components/motion/constants";
-
 import { SITE_IMAGES } from "@/lib/siteConfig";
 
 const menus = [
   {
     title: "Wine List",
-    description: "A curated selection of Mediterranean wines to complement your meal.",
+    description:
+      "A curated selection of Mediterranean wines to complement your meal.",
     href: "/wine-list",
-    icon: "🍷",
+    image: "/images/menus/wine-glass.jpg",
   },
   {
     title: "Lunch Menu",
-    description: "Light Mediterranean favourites, perfect for a midday escape.",
+    description:
+      "Light Mediterranean favourites, perfect for a midday escape.",
     href: "/lunch-menu",
-    icon: "☀️",
+    image: SITE_IMAGES.lunch,
   },
   {
     title: "Main Menu",
-    description: "Our signature charcoal-grilled meats and Mediterranean classics.",
+    description:
+      "Our signature charcoal-grilled meats and Mediterranean classics.",
     href: "/main-menu",
-    icon: "🔥",
+    image: SITE_IMAGES.mainMenu,
   },
   {
     title: "Dessert Menu",
-    description: "Sweet endings crafted with care and Mediterranean inspiration.",
+    description:
+      "Sweet endings crafted with care and Mediterranean inspiration.",
     href: "/dessert-menu",
-    icon: "🍮",
+    image: SITE_IMAGES.dessert,
   },
   {
     title: "Drink Menu",
     description: "Cocktails, spirits, soft drinks and more.",
     href: "/drink-menu",
-    icon: "🥂",
+    image: SITE_IMAGES.drink,
   },
 ];
 
+function OliveBranch({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 200 280"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-hidden
+    >
+      <path
+        d="M98 20c2 48 6 96 4 144-1 28-8 55-22 78"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <ellipse cx="78" cy="70" rx="18" ry="9" transform="rotate(-35 78 70)" stroke="currentColor" strokeWidth="1.2" />
+      <ellipse cx="118" cy="95" rx="16" ry="8" transform="rotate(40 118 95)" stroke="currentColor" strokeWidth="1.2" />
+      <ellipse cx="72" cy="130" rx="17" ry="8" transform="rotate(-30 72 130)" stroke="currentColor" strokeWidth="1.2" />
+      <ellipse cx="112" cy="155" rx="15" ry="7" transform="rotate(35 112 155)" stroke="currentColor" strokeWidth="1.2" />
+      <ellipse cx="70" cy="185" rx="16" ry="8" transform="rotate(-40 70 185)" stroke="currentColor" strokeWidth="1.2" />
+      <ellipse cx="100" cy="210" rx="14" ry="7" transform="rotate(25 100 210)" stroke="currentColor" strokeWidth="1.2" />
+      <ellipse cx="78" cy="240" rx="13" ry="6" transform="rotate(-20 78 240)" stroke="currentColor" strokeWidth="1.2" />
+    </svg>
+  );
+}
+
+function MenuCard({
+  title,
+  description,
+  href,
+  image,
+  index,
+}: {
+  title: string;
+  description: string;
+  href: string;
+  image: string;
+  index: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 22 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.55, delay: index * 0.07, ease: EASE_OUT }}
+      className="h-full"
+    >
+      <Link
+        href={href}
+        className="group flex items-center gap-4 sm:gap-5 h-full rounded-2xl bg-white/90 shadow-[0_8px_30px_rgba(61,42,31,0.08)] border border-pupa-brown/5 px-4 py-4 sm:px-5 sm:py-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_14px_40px_rgba(61,42,31,0.12)]"
+      >
+        <div className="relative h-16 w-16 sm:h-20 sm:w-20 shrink-0 overflow-hidden rounded-full ring-2 ring-pupa-beige shadow-inner">
+          <Image
+            src={image}
+            alt=""
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            sizes="80px"
+          />
+        </div>
+
+        <div className="min-w-0 flex-1 pr-1">
+          <h2 className="font-serif text-pupa-brown text-2xl sm:text-3xl font-semibold mb-1 group-hover:text-pupa-accent transition-colors">
+            {title}
+          </h2>
+          <p className="font-sans text-pupa-warm text-base leading-relaxed line-clamp-2">
+            {description}
+          </p>
+          <span className="inline-block mt-2.5 font-sans text-sm tracking-[0.18em] uppercase text-pupa-brown/70 group-hover:text-pupa-accent transition-colors">
+            View Menu →
+          </span>
+        </div>
+
+        <span className="shrink-0 flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border border-pupa-brown/20 text-pupa-brown transition-all duration-300 group-hover:bg-pupa-brown group-hover:text-pupa-cream group-hover:border-pupa-brown">
+          <ArrowRight size={18} />
+        </span>
+      </Link>
+    </motion.div>
+  );
+}
+
 export default function MenusView() {
+  const topMenus = menus.slice(0, 4);
+  const lastMenu = menus[4];
+
   return (
     <>
       <PageHero
@@ -50,42 +139,43 @@ export default function MenusView() {
         backgroundImage={SITE_IMAGES.menus}
       />
 
-      <section className="py-14 sm:py-20 bg-pupa-beige">
-        <div className="max-w-4xl mx-auto px-5 sm:px-6">
+      <section className="relative py-4 sm:py-6 md:py-8 bg-pupa-beige overflow-hidden">
+        <OliveBranch className="pointer-events-none absolute -left-6 top-8 w-36 sm:w-48 text-pupa-brown/15 -rotate-12" />
+        <OliveBranch className="pointer-events-none absolute -right-8 bottom-12 w-40 sm:w-52 text-pupa-brown/15 rotate-[160deg] scale-x-[-1]" />
+
+        <div className="relative max-w-6xl mx-auto px-5 sm:px-6">
+          <FadeIn className="text-center mb-6 sm:mb-8">
+            <Leaf
+              size={22}
+              className="mx-auto mb-2 text-pupa-brown/55"
+              strokeWidth={1.5}
+            />
+            <p className="font-serif text-pupa-brown text-xl sm:text-2xl text-balance">
+              Choose a menu and discover Mediterranean flavours.
+            </p>
+          </FadeIn>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-            {menus.map((menu, i) => (
-              <motion.div
-                key={menu.title}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-30px" }}
-                transition={{ duration: 0.55, delay: i * 0.07, ease: EASE_OUT }}
-              >
-                <Link
-                  href={menu.href}
-                  className="flex items-start gap-4 sm:gap-5 bg-white border border-pupa-warm p-5 sm:p-6 hover:border-pupa-gold hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 group h-full rounded-sm"
-                >
-                  <span className="text-2xl sm:text-3xl shrink-0">{menu.icon}</span>
-                  <div className="min-w-0">
-                    <h2 className="font-serif text-pupa-brown text-lg sm:text-xl mb-1.5 sm:mb-2 group-hover:text-pupa-accent transition-colors">
-                      {menu.title}
-                    </h2>
-                    <p className="font-sans text-pupa-brown/60 text-sm leading-relaxed">
-                      {menu.description}
-                    </p>
-                    <span className="inline-block mt-3 font-sans text-xs tracking-wider uppercase text-pupa-gold">
-                      View Menu →
-                    </span>
-                  </div>
-                </Link>
-              </motion.div>
+            {topMenus.map((menu, i) => (
+              <MenuCard key={menu.title} {...menu} index={i} />
             ))}
           </div>
 
-          <FadeIn className="text-center mt-10 sm:mt-12" delay={0.2}>
-            <p className="font-sans text-pupa-brown/40 text-xs sm:text-sm px-2">
-              Menus are subject to seasonal changes. Please ask your server about today&apos;s specials.
-            </p>
+          <div className="mt-4 sm:mt-5 flex justify-center">
+            <div className="w-full sm:w-[calc(50%-0.625rem)]">
+              <MenuCard {...lastMenu} index={4} />
+            </div>
+          </div>
+
+          <FadeIn className="mt-8 sm:mt-10" delay={0.15}>
+            <div className="flex items-center gap-4 sm:gap-6">
+              <div className="h-px flex-1 bg-pupa-brown/20" />
+              <p className="font-sans text-pupa-warm text-base text-center max-w-md shrink">
+                Menus are subject to seasonal changes. Please ask your server
+                about today&apos;s specials.
+              </p>
+              <div className="h-px flex-1 bg-pupa-brown/20" />
+            </div>
           </FadeIn>
         </div>
       </section>

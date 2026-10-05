@@ -11,18 +11,14 @@ export const PRIVATE_HIRE_CONTENT = {
   formTitle: "Tell us about your event",
   formDescription:
     "Fill in the form below and our team will get back to you as soon as possible. Prefer to talk? Call us directly.",
-  phone: "0161 400 4830",
-  email: "info@puparestaurant.com",
 };
 
 export const PRIVATE_HIRE_IMAGES = [
-  { src: "/images/private-hire/tempImage3ecpp1.png", alt: "Private dining at Pupa" },
-  { src: "/images/private-hire/tempImageTIdPmz.png", alt: "Mediterranean dining room" },
-  { src: "/images/private-hire/tempImageCxNJDa.png", alt: "Event setup at Pupa" },
-  { src: "/images/private-hire/tempImage4iRiig.png", alt: "Celebration at Pupa Restaurant" },
-  { src: "/images/private-hire/tempImagep8ISxe.png", alt: "Private hire dining" },
-  { src: "/images/private-hire/IMG_2406.jpeg", alt: "Pupa private event" },
+  { src: "/images/private-hire/IMG_2406.jpeg", alt: "Private dining at Pupa" },
   { src: "/images/private-hire/IMG_2272.jpeg", alt: "Guests dining at Pupa" },
+  { src: "/images/about/about-1.jpg", alt: "Pupa Restaurant interior" },
+  { src: "/images/about/about-2.jpg", alt: "Charcoal grill at Pupa" },
+  { src: "/images/heroes/private-hire.jpg", alt: "Private hire at Pupa Restaurant" },
 ];
 
 export const DINING_STYLE_OPTIONS = [

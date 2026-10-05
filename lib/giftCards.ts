@@ -1,4 +1,4 @@
-import { SITE_IMAGES } from "@/lib/siteConfig";
+import { SITE_CONTACT, SITE_IMAGES } from "@/lib/siteConfig";
 
 export const GIFT_CARD_CONTENT = {
   gc_hero_eyebrow: "Give the Gift of",
@@ -11,9 +11,9 @@ export const GIFT_CARD_CONTENT = {
   gc_store_label: "Available In Store",
   gc_store_title: "Purchase at the restaurant",
   gc_store_text:
-    "Visit us at 37 Turner Street, Northern Quarter to pick up a physical gift card. Choose your amount and we'll prepare it ready to gift.",
-  gc_phone: "0161 400 4830",
-  gc_email: "info@puparestaurant.com",
+    `Visit us at ${SITE_CONTACT.addressLine1.replace(",", "")}, Northern Quarter to pick up a physical gift card. Choose your amount and we'll prepare it ready to gift.`,
+  gc_phone: SITE_CONTACT.phone,
+  gc_email: SITE_CONTACT.email,
 };
 
 export const GIFT_CARD_AMOUNTS = ["£25", "£50", "£75", "£100", "Custom"];

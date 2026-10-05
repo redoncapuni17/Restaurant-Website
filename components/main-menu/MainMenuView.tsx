@@ -1,51 +1,39 @@
-"use client";
-
-import FadeIn from "@/components/motion/FadeIn";
 import PageHero from "@/components/motion/PageHero";
 import {
-  MenuCard,
-  MenuItemRow,
-  MenuNote,
-  MenuPageShell,
-  MenuSectionHeader,
-  MenuSectionIntro,
-} from "@/components/menu/MenuLayout";
+  MenuCatalogShell,
+  type CatalogCard,
+} from "@/components/menu/MenuCatalog";
 import { MAIN_MENU_FOOTER, MAIN_MENU_SECTIONS } from "@/lib/mainMenu";
-
 import { SITE_IMAGES } from "@/lib/siteConfig";
 
-function MenuSectionBlock({
-  section,
-  delay = 0,
-  twoColumn = false,
-}: {
-  section: (typeof MAIN_MENU_SECTIONS)[number];
-  delay?: number;
-  twoColumn?: boolean;
-}) {
-  return (
-    <FadeIn delay={delay}>
-      <MenuSectionHeader eyebrow={section.eyebrow} title={section.title} />
-      <MenuCard>
-        {section.intro && <MenuSectionIntro>{section.intro}</MenuSectionIntro>}
-        {section.note && <MenuNote>{section.note}</MenuNote>}
-        <div className={twoColumn ? "grid grid-cols-1 sm:grid-cols-2 gap-x-8" : undefined}>
-          {section.items.map((item) => (
-            <MenuItemRow
-              key={item.name}
-              name={item.name}
-              price={item.price}
-              description={item.description}
-              dietary={item.dietary}
-              favorite={item.favorite}
-              note={item.note}
-            />
-          ))}
-        </div>
-      </MenuCard>
-    </FadeIn>
-  );
-}
+const PILL_LABELS: Record<string, string> = {
+  starters: "Starters",
+  grill: "Grill",
+  steaks: "Steaks",
+  burgers: "Burgers",
+  sharing: "Sharing",
+  sides: "Sides",
+  sauces: "Sauces",
+};
+
+const CARD_TITLES: Record<string, string> = {
+  starters: "Starters",
+  grill: "Grill",
+  steaks: "Steaks",
+  burgers: "Burgers",
+  sharing: "Sharing",
+  sides: "Sides",
+  sauces: "Sauces",
+};
+
+const MAIN_CARDS: CatalogCard[] = MAIN_MENU_SECTIONS.map((section) => ({
+  id: section.id,
+  pillLabel: PILL_LABELS[section.id] ?? section.title,
+  title: CARD_TITLES[section.id] ?? section.title,
+  intro: section.intro,
+  note: section.note,
+  items: section.items,
+}));
 
 export default function MainMenuView() {
   return (
@@ -57,16 +45,11 @@ export default function MainMenuView() {
         backgroundImage={SITE_IMAGES.mainMenu}
       />
 
-      <MenuPageShell footer={MAIN_MENU_FOOTER}>
-        {MAIN_MENU_SECTIONS.map((section, i) => (
-          <MenuSectionBlock
-            key={section.id}
-            section={section}
-            delay={i * 0.04}
-            twoColumn={section.id === "sauces"}
-          />
-        ))}
-      </MenuPageShell>
+      <MenuCatalogShell
+        cards={MAIN_CARDS}
+        footer={MAIN_MENU_FOOTER}
+        navLabel="Main menu categories"
+      />
     </>
   );
 }

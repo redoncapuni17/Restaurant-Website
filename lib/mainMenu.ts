@@ -1,13 +1,6 @@
-export type DietaryTag = "V" | "VG" | "GF";
+import type { MenuItem } from "./menuTypes";
 
-export interface MainMenuItem {
-  name: string;
-  price: string;
-  description?: string;
-  dietary?: DietaryTag[];
-  favorite?: boolean;
-  note?: string;
-}
+export type { DietaryTag, MenuItem } from "./menuTypes";
 
 export interface MainMenuSection {
   id: string;
@@ -15,7 +8,7 @@ export interface MainMenuSection {
   title: string;
   intro?: string;
   note?: string;
-  items: MainMenuItem[];
+  items: MenuItem[];
 }
 
 export const STARTERS_SECTION: MainMenuSection = {

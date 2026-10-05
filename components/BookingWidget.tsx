@@ -1,80 +1,146 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { CalendarCheck, Clock, ShieldCheck } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Script from "next/script";
+import { motion, AnimatePresence } from "framer-motion";
+import { CalendarDays, Loader2 } from "lucide-react";
+import {
+  TABLEGO_ALLOWED_ORIGIN,
+  TABLEGO_IFRAME_RESIZER_URL,
+  TABLEGO_WIDGET_URL,
+} from "@/lib/booking-widget";
+import { EASE_OUT } from "@/components/motion/constants";
 
-const TRUST_BADGES = [
-  { icon: CalendarCheck, label: "Real-time availability" },
-  { icon: Clock, label: "Instant confirmation" },
-  { icon: ShieldCheck, label: "Secure booking" },
-];
+declare global {
+  interface Window {
+    iFrameResize?: (
+      options: Record<string, unknown>,
+      selector: string
+    ) => void;
+  }
+}
 
-export default function BookingWidget({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+/** Lartësi e qëndrueshme fillestare — afër formës reale, që resize të mos kërcejë faqen. */
+const BOOKING_BASE_HEIGHT = 520;
+const LOAD_FALLBACK_MS = 8000;
+
+function bookingMaxHeight() {
+  if (typeof window === "undefined") return 780;
+  return Math.min(780, Math.round(window.innerHeight * 0.82));
+}
+
+function iframeResizeOptions() {
+  return {
+    checkOrigin: [TABLEGO_ALLOWED_ORIGIN],
+    scrolling: false,
+    tolerance: 24,
+    heightCalculationMethod: "lowestElement",
+    minHeight: BOOKING_BASE_HEIGHT,
+  };
+}
+
+export default function BookingSystemWidget() {
+  const resizedRef = useRef(false);
+  const [ready, setReady] = useState(false);
+  const [maxHeight, setMaxHeight] = useState(780);
+
+  useEffect(() => {
+    const update = () => setMaxHeight(bookingMaxHeight());
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  const attachResizer = useCallback(() => {
+    if (resizedRef.current || !window.iFrameResize) return;
+    const el = document.getElementById("tablego-booking");
+    if (!el) return;
+    resizedRef.current = true;
+    window.iFrameResize(iframeResizeOptions(), "#tablego-booking");
+  }, []);
+
+  const markReady = useCallback(() => {
+    setReady(true);
+    attachResizer();
+  }, [attachResizer]);
+
+  useEffect(() => {
+    attachResizer();
+  }, [attachResizer]);
+
+  // If the iframe never fires onLoad, still reveal after a timeout
+  useEffect(() => {
+    if (ready) return;
+    const t = window.setTimeout(() => setReady(true), LOAD_FALLBACK_MS);
+    return () => window.clearTimeout(t);
+  }, [ready]);
+
   return (
-    <section
-      id="reservation"
-      className="py-24 bg-pupa-dark relative overflow-hidden"
+    <motion.div
+      initial={{ opacity: 0, y: -16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.55, delay: 0.22, ease: EASE_OUT }}
+      className="relative leading-[0]"
+      style={{ minHeight: BOOKING_BASE_HEIGHT }}
     >
-      <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <div className="absolute top-0 left-0 w-64 h-64 border border-pupa-gold rounded-full -translate-x-32 -translate-y-32" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 border border-pupa-gold rounded-full translate-x-48 translate-y-48" />
-      </div>
-
-      <div className="max-w-6xl mx-auto px-6 relative">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+      <AnimatePresence>
+        {!ready && (
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center lg:text-left"
+            key="booking-loading"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, ease: EASE_OUT }}
+            className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-xl bg-white px-6 text-center shadow-xl shadow-black/15"
+            aria-busy="true"
+            aria-live="polite"
           >
-            <p className="font-sans text-pupa-gold text-xs tracking-[0.4em] uppercase mb-4">
-              Book Your Experience
-            </p>
-            <h2 className="font-serif text-5xl md:text-6xl text-pupa-cream font-semibold mb-4">
-              Make a Reservation
-            </h2>
-            <div className="w-16 h-px bg-pupa-gold mx-auto lg:mx-0 mb-6" />
-            <p className="font-sans text-pupa-warm text-sm max-w-md mx-auto lg:mx-0 mb-8">
-              Reserve your table in seconds. Real-time availability with instant
-              confirmation.
-            </p>
-
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-3 mb-8">
-              {TRUST_BADGES.map(({ icon: Icon, label }) => (
-                <div
-                  key={label}
-                  className="flex items-center gap-2 text-pupa-warm/80"
-                >
-                  <Icon size={16} className="text-pupa-gold" />
-                  <span className="font-sans text-xs tracking-wide">
-                    {label}
-                  </span>
-                </div>
-              ))}
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-pupa-brown/10">
+              <CalendarDays className="text-pupa-accent" size={22} strokeWidth={1.5} />
             </div>
-
-            <p className="font-sans text-pupa-warm text-sm">
-              Can&apos;t find a timeslot?{" "}
-              <a
-                href="tel:01614004830"
-                className="text-pupa-gold hover:underline"
-              >
-                Call us on 0161 400 4830
-              </a>
+            <p className="font-serif text-xl text-pupa-brown font-medium">
+              Reserve a table
             </p>
+            <p className="font-sans text-sm text-pupa-brown/55 tracking-wide">
+              Loading booking calendar…
+            </p>
+            <Loader2
+              className="mt-1 text-pupa-gold animate-spin"
+              size={20}
+              aria-hidden
+            />
           </motion.div>
+        )}
+      </AnimatePresence>
 
-          <div className="relative w-full max-w-md mx-auto lg:ml-auto lg:mr-0">
-            {children}
-          </div>
-        </div>
-      </div>
-    </section>
+      <motion.div
+        initial={false}
+        animate={{ opacity: ready ? 1 : 0 }}
+        transition={{ duration: 0.5, ease: EASE_OUT }}
+        className="relative overflow-x-hidden overflow-y-auto"
+        style={{ maxHeight }}
+      >
+        <iframe
+          id="tablego-booking"
+          src={TABLEGO_WIDGET_URL}
+          title="Book a table at Pupa Restaurant & Bar"
+          scrolling="no"
+          className="block w-full border-0"
+          onLoad={markReady}
+          style={{
+            width: "100%",
+            maxWidth: 560,
+            height: BOOKING_BASE_HEIGHT,
+            minHeight: BOOKING_BASE_HEIGHT,
+            margin: 0,
+          }}
+        />
+      </motion.div>
+
+      <Script
+        src={TABLEGO_IFRAME_RESIZER_URL}
+        strategy="afterInteractive"
+        onLoad={attachResizer}
+      />
+    </motion.div>
   );
 }

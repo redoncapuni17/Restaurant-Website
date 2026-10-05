@@ -1,11 +1,8 @@
-export interface DessertItem {
-  name: string;
-  price: string;
-  priceBottle?: string;
-  description?: string;
-}
+import type { MenuItem } from "./menuTypes";
 
-export const DESSERT_ITEMS: DessertItem[] = [
+export type { MenuItem };
+
+export const DESSERT_ITEMS: MenuItem[] = [
   {
     name: "Baked Cheesecake",
     price: "8",
@@ -37,7 +34,7 @@ export const DESSERT_ITEMS: DessertItem[] = [
   },
 ];
 
-export const COFFEE_ITEMS: DessertItem[] = [
+export const COFFEE_ITEMS: MenuItem[] = [
   { name: "Espresso / Doppio", price: "3 / 3.5" },
   { name: "Macchiato", price: "3.5" },
   { name: "Cortado", price: "3.5" },
@@ -50,7 +47,7 @@ export const COFFEE_ITEMS: DessertItem[] = [
   },
 ];
 
-export const ALCOHOLIC_COFFEE_ITEMS: DessertItem[] = [
+export const ALCOHOLIC_COFFEE_ITEMS: MenuItem[] = [
   { name: "Irish Coffee", price: "9" },
   { name: "Baileys Coffee", price: "9" },
   { name: "Brandy Coffee", price: "9" },
@@ -58,18 +55,18 @@ export const ALCOHOLIC_COFFEE_ITEMS: DessertItem[] = [
   { name: "Espresso Choctini", price: "11" },
 ];
 
-export const DESSERT_WINE_ITEMS: DessertItem[] = [
+export const DESSERT_WINE_ITEMS: MenuItem[] = [
   {
     name: "Castelnau de Suduiraut (France)",
     price: "7",
-    priceBottle: "43",
+    priceSecondary: "43",
     description:
       "aromas of fragrant orange blossom, spices and fudge.",
   },
   {
     name: "Araldica Moscato d'Asti (Italy)",
     price: "",
-    priceBottle: "28",
+    priceSecondary: "28",
     description:
       "delicate and aromatic with fine bubbles. Fresh peach, pear and elegant zest.",
   },
