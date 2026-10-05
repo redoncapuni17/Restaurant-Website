@@ -68,13 +68,14 @@ export default function BookingSystemWidget() {
   }, []);
 
   useEffect(() => {
+    const iframe = iframeRef.current;
     syncHeight();
 
     const onPageShow = (event: PageTransitionEvent) => {
       if (!event.persisted) return;
-      const iframe = iframeRef.current;
-      if (!iframe) return;
-      releaseResizer(iframe);
+      const frame = iframeRef.current;
+      if (!frame) return;
+      releaseResizer(frame);
       syncHeight();
     };
     window.addEventListener("pageshow", onPageShow);
@@ -82,7 +83,6 @@ export default function BookingSystemWidget() {
       window.removeEventListener("pageshow", onPageShow);
       kickTimers.current.forEach((id) => window.clearTimeout(id));
       kickTimers.current = [];
-      const iframe = iframeRef.current;
       if (iframe) releaseResizer(iframe);
     };
   }, [syncHeight]);
