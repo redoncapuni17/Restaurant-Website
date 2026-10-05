@@ -11,15 +11,6 @@ const VOUCHER_MIN_HEIGHT = 320;
 /** TableGo cards can't be styled inside the iframe, so the whole widget is scaled down. */
 const VOUCHER_SCALE = 0.92;
 
-declare global {
-  interface Window {
-    iFrameResize?: (
-      options: Record<string, unknown>,
-      selector: string
-    ) => void;
-  }
-}
-
 export default function GiftCardVouchersWidget() {
   const resizedRef = useRef(false);
   const frameRef = useRef<HTMLDivElement>(null);

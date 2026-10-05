@@ -1,3 +1,12 @@
+declare global {
+  interface Window {
+    iFrameResize?: (
+      options: Record<string, unknown>,
+      target: string | HTMLElement
+    ) => void;
+  }
+}
+
 export const TABLEGO_WIDGET_URL =
   process.env.NEXT_PUBLIC_TABLEGO_WIDGET_URL ??
   "https://tablego.uk/widget/pupa-restaurant-and-bar--wwefqm";

@@ -15,15 +15,6 @@ type ResizableFrame = HTMLIFrameElement & {
   };
 };
 
-declare global {
-  interface Window {
-    iFrameResize?: (
-      options: Record<string, unknown>,
-      target: string | HTMLElement
-    ) => void;
-  }
-}
-
 /** Lartësi e qëndrueshme fillestare — afër formës reale, që resize të mos kërcejë faqen. */
 const BOOKING_BASE_HEIGHT = 520;
 
