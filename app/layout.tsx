@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import TableGoTracking from "@/components/TableGoTracking";
+import { TABLEGO_IFRAME_RESIZER_URL } from "@/lib/booking-widget";
 import "./globals.css";
 
 const GTM_ID = "GTM-TMMS3NDD";
@@ -47,6 +48,7 @@ export default function RootLayout({
       <head>
         <link rel="dns-prefetch" href="https://tablego.uk" />
         <link rel="preconnect" href="https://tablego.uk" crossOrigin="" />
+        <link rel="preload" href={TABLEGO_IFRAME_RESIZER_URL} as="script" />
       </head>
       <body>
         <Script id="google-tag-manager" strategy="afterInteractive">
