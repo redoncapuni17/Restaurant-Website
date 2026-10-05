@@ -4,10 +4,9 @@ export const GIFT_CARD_CONTENT = {
   gc_hero_eyebrow: "Give the Gift of",
   gc_title: "Gift Cards",
   gc_eyebrow: "Mediterranean Dining",
-  gc_heading: "The perfect present for food lovers",
+  gc_heading: "The perfect present",
   gc_body:
-    "Treat someone special to an evening at Pupa — charcoal-grilled Mediterranean flavours, warm atmosphere, and unforgettable dining in Manchester's Northern Quarter.",
-  gc_price_from: "25",
+    "A night at Pupa — charcoal grill, a warm room, and the Northern Quarter.",
   gc_store_label: "Available In Store",
   gc_store_title: "Purchase at the restaurant",
   gc_store_text:
@@ -16,13 +15,11 @@ export const GIFT_CARD_CONTENT = {
   gc_email: SITE_CONTACT.email,
 };
 
-export const GIFT_CARD_AMOUNTS = ["£25", "£50", "£75", "£100", "Custom"];
-
 export const GIFT_CARD_PERKS = [
-  "Valid for food & drink at Pupa",
-  "Beautiful physical card to gift in person",
-  "Valid for 12 months from purchase",
-  "Perfect for birthdays, thank-yous & celebrations",
+  "Food & drink",
+  "A card to hand over",
+  "Valid 12 months",
+  "Birthdays & thank-yous",
 ];
 
 export const GIFT_CARD_IMAGES = {
