@@ -24,9 +24,8 @@ function iframeResizeOptions() {
   return {
     checkOrigin: [TABLEGO_ALLOWED_ORIGIN],
     scrolling: false,
-    tolerance: 24,
+    tolerance: 8,
     heightCalculationMethod: "lowestElement",
-    minHeight: BOOKING_BASE_HEIGHT,
   };
 }
 
@@ -43,22 +42,19 @@ export default function BookingSystemWidget() {
   }, []);
 
   return (
-    <div
-      className="rounded-xl overflow-hidden border border-white/20 bg-white shadow-xl shadow-black/25 leading-[0]"
-      style={{ minHeight: BOOKING_BASE_HEIGHT }}
-    >
+    <div className="leading-[0] bg-transparent">
       <iframe
         id="tablego-booking"
         src={TABLEGO_WIDGET_URL}
         title="Book a table at Pupa Restaurant & Bar"
         scrolling="no"
-        className="block w-full border-0"
+        className="block w-full border-0 bg-transparent"
         style={{
           width: "100%",
           maxWidth: 560,
           height: BOOKING_BASE_HEIGHT,
-          minHeight: BOOKING_BASE_HEIGHT,
           margin: 0,
+          backgroundColor: "transparent",
         }}
       />
       <Script
