@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Inter, Cormorant_Garamond } from "next/font/google";
+import TableGoTracking from "@/components/TableGoTracking";
 import "./globals.css";
+
+const GTM_ID = "GTM-TMMS3NDD";
 
 // Fontet ngarkohen me next/font: vetë-host + metrika fallback automatike, që
 // eliminon "kërcimin"/ndryshimin e tekstit gjatë ngarkimit (pa FOUT).
@@ -46,9 +49,22 @@ export default function RootLayout({
         <link rel="preconnect" href="https://tablego.uk" crossOrigin="" />
       </head>
       <body>
-        <Script id="reload-scroll-top" strategy="beforeInteractive">
-          {`try{var n=performance.getEntriesByType("navigation")[0];if(n&&n.type==="reload"){if("scrollRestoration"in history)history.scrollRestoration="manual";var top=function(){if(location.hash)return;var h=document.documentElement;var p=h.style.scrollBehavior;h.style.scrollBehavior="auto";scrollTo(0,0);h.style.scrollBehavior=p;};top();addEventListener("pageshow",top);addEventListener("load",function(){top();setTimeout(function(){if("scrollRestoration"in history)history.scrollRestoration="auto";},150);});}}catch(e){}`}
+        <Script id="google-tag-manager" strategy="afterInteractive">
+          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','${GTM_ID}');`}
         </Script>
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
+        <TableGoTracking />
         {children}
       </body>
     </html>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,8 +8,6 @@ import { Menu, X, Instagram, Facebook, Twitter, ChevronDown } from "lucide-react
 import { EASE_OUT } from "@/components/motion/constants";
 import { SITE_SOCIAL } from "@/lib/siteConfig";
 
-/** Approx banner + nav — avoids layout jump before ResizeObserver runs */
-const HEADER_FALLBACK_HEIGHT = 108;
 const navLinks = [
   { href: "/", label: "Home" },
   {
@@ -52,7 +50,7 @@ export default function Navbar() {
   const headerRef = useRef<HTMLElement>(null);
   const menusDropdownRef = useRef<HTMLDivElement>(null);
   const lastScrollY = useRef(0);
-  const [headerHeight, setHeaderHeight] = useState(HEADER_FALLBACK_HEIGHT);
+  const [headerHeight, setHeaderHeight] = useState(0);
 
   useEffect(() => {
     lastScrollY.current = window.scrollY;
@@ -81,17 +79,16 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isOpen]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const el = headerRef.current;
-    if (!el) return;
+    if (!el || typeof ResizeObserver === "undefined") return;
 
     const update = () => {
-      const h = el.getBoundingClientRect().height;
-      if (h > 0) setHeaderHeight(h);
+      const height = el.getBoundingClientRect().height;
+      setHeaderHeight(height);
+      document.documentElement.style.setProperty("--site-header", `${height}px`);
     };
     update();
-
-    if (typeof ResizeObserver === "undefined") return;
     const ro = new ResizeObserver(update);
     ro.observe(el);
     return () => ro.disconnect();
@@ -131,15 +128,6 @@ export default function Navbar() {
     };
   }, [isOpen]);
 
-  useEffect(() => {
-    if (!isOpen) return;
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsOpen(false);
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [isOpen]);
-
   const navFocus =
     "outline-none focus:outline-none focus-visible:ring-1 focus-visible:ring-pupa-accent/40 focus-visible:ring-offset-0 rounded-sm";
 
@@ -166,37 +154,27 @@ export default function Navbar() {
             ? "shadow-md shadow-pupa-brown/10 border-pupa-brown/10"
             : "border-transparent"
         }`}
-        initial={false}
-        animate={{ y: hidden ? "-100%" : 0 }}
+        initial={{ y: -24, opacity: 0 }}
+        animate={{
+          y: hidden ? "-100%" : 0,
+          opacity: 1,
+        }}
         transition={{ duration: 0.35, ease: EASE_OUT }}
       >
         <div>
-          <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0, ease: EASE_OUT }}
-            className="text-pupa-brown/70 text-center py-2.5 px-3 text-[0.7rem] sm:text-xs tracking-[0.2em] sm:tracking-widest uppercase font-sans border-b border-pupa-brown/10 leading-relaxed"
-          >
-            <span className="hidden sm:inline">
-              Our restaurant prefers cash payments due to high card transaction fees
-            </span>
-            <span className="sm:hidden">We prefer cash payments</span>
-          </motion.div>
-
           <nav className="w-full bg-pupa-beige">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-4">
           <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.04, ease: EASE_OUT }}
+            initial={{ opacity: 0, x: -12 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.12, ease: EASE_OUT }}
           >
             <Link
               href="/"
-              className={`font-serif font-semibold text-pupa-brown tracking-[0.02em] sm:tracking-[0.2em] uppercase transition-colors duration-300 hover:text-pupa-accent min-w-0 ${navFocus}`}
+              className={`font-serif font-semibold text-pupa-brown tracking-[0.15em] sm:tracking-[0.2em] uppercase transition-colors duration-300 hover:text-pupa-accent shrink-0 ${navFocus}`}
             >
-              <span className="block whitespace-nowrap text-2xl sm:text-3xl leading-none">
-                Pupa Restaurant & Bar
-              </span>
+              <span className="text-xl sm:text-3xl sm:hidden">Pupa Restaurant & Bar</span>
+              <span className="hidden sm:inline text-3xl">Pupa Restaurant & Bar</span>
             </Link>
           </motion.div>
 
@@ -211,9 +189,9 @@ export default function Navbar() {
                 <motion.div
                   key={link.label}
                   ref={menusDropdownRef}
-                  initial={{ opacity: 0, y: -12 }}
+                  initial={{ opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35, delay: 0.08 + i * 0.04, ease: EASE_OUT }}
+                  transition={{ duration: 0.45, delay: 0.2 + i * 0.06, ease: EASE_OUT }}
                   className="relative flex items-center h-6"
                   onMouseEnter={() => setDesktopMenusOpen(true)}
                   onMouseLeave={() => setDesktopMenusOpen(false)}
@@ -282,9 +260,9 @@ export default function Navbar() {
               ) : (
                 <motion.div
                   key={link.href}
-                  initial={{ opacity: 0, y: -12 }}
+                  initial={{ opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35, delay: 0.08 + i * 0.04, ease: EASE_OUT }}
+                  transition={{ duration: 0.45, delay: 0.2 + i * 0.06, ease: EASE_OUT }}
                   className="flex items-center h-6"
                 >
                   <Link
@@ -321,13 +299,15 @@ export default function Navbar() {
                   rel="noopener noreferrer"
                   aria-label={label}
                   className={`text-pupa-brown/70 hover:text-pupa-accent transition-colors ${navFocus}`}
-                  initial={{ opacity: 0, y: -12 }}
+                  initial={{ opacity: 0, y: -6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
-                    duration: 0.35,
-                    delay: 0.28 + i * 0.04,
+                    duration: 0.4,
+                    delay: 0.35 + i * 0.06,
                     ease: EASE_OUT,
                   }}
+                  whileHover={{ y: -2, scale: 1.08 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   <Icon size={18} />
                 </motion.a>
@@ -335,77 +315,45 @@ export default function Navbar() {
               })}
             </div>
 
-            <motion.button
+            <button
               type="button"
               onClick={() => setIsOpen(!isOpen)}
               aria-label={isOpen ? "Close menu" : "Open menu"}
               aria-expanded={isOpen}
-              initial={{ opacity: 0, y: -12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: 0.1, ease: EASE_OUT }}
               className={`lg:hidden border-0 bg-transparent p-2 -mr-2 text-pupa-brown cursor-pointer ${navFocus}`}
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </motion.button>
+            </button>
           </div>
         </div>
 
-          </nav>
-        </div>
-      </motion.header>
-
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            <motion.button
-              key="nav-backdrop"
-              type="button"
-              aria-label="Close menu"
-              className="fixed inset-0 z-[60] bg-pupa-dark/45 lg:hidden"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3, ease: EASE_OUT }}
-              onClick={() => setIsOpen(false)}
-            />
-            <motion.aside
-              key="nav-drawer"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Menu"
-              className="fixed top-0 right-0 z-[70] flex h-full w-[min(86vw,22rem)] flex-col bg-pupa-beige shadow-2xl lg:hidden"
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ duration: 0.38, ease: EASE_OUT }}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.35, ease: EASE_OUT }}
+              className="lg:hidden overflow-hidden bg-pupa-beige border-t border-pupa-brown/10"
             >
-              <div className="flex items-center justify-between border-b border-pupa-brown/10 px-5 py-4">
-                <span className="font-serif text-lg tracking-[0.16em] uppercase text-pupa-brown">
-                  Pupa
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  aria-label="Close menu"
-                  className={`border-0 bg-transparent p-1 text-pupa-brown ${navFocus}`}
-                >
-                  <X size={22} />
-                </button>
-              </div>
-
-              <div className="flex-1 overflow-y-auto px-5 py-2">
-                {navLinks.map((link) => {
+              <div className="px-4 sm:px-6 py-2 pb-6 flex flex-col">
+                {navLinks.map((link, i) => {
                   const menusActive =
                     Boolean(link.children) && isMenusActive(pathname);
 
                   return link.children ? (
-                    <div key={link.label}>
+                    <motion.div
+                      key={link.label}
+                      initial={{ opacity: 0, x: -12 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.05, duration: 0.35, ease: EASE_OUT }}
+                    >
                       <button
                         type="button"
                         onClick={() => setMenuOpen(!menuOpen)}
                         aria-expanded={menuOpen}
                         aria-controls="mobile-menus-dropdown"
-                        className={`flex w-full items-center justify-between border-0 bg-transparent p-0 py-3.5 font-sans text-base tracking-wider uppercase cursor-pointer ${
+                        className={`flex items-center justify-between w-full border-0 bg-transparent p-0 py-3 font-sans text-base tracking-wider uppercase cursor-pointer ${
                           menusActive ? "text-pupa-accent" : "text-pupa-brown"
                         } ${navFocus}`}
                       >
@@ -423,10 +371,10 @@ export default function Navbar() {
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: "auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.28, ease: EASE_OUT }}
+                            transition={{ duration: 0.3, ease: EASE_OUT }}
                             className="overflow-hidden"
                           >
-                            <div className="mb-2 ml-1 flex flex-col border-l border-pupa-brown/15 pl-4">
+                            <div className="ml-3 pl-3 border-l border-pupa-brown/15 flex flex-col mb-2">
                               {link.children.map((child) => {
                                 const childActive = isLinkActive(
                                   pathname,
@@ -452,56 +400,64 @@ export default function Navbar() {
                           </motion.div>
                         )}
                       </AnimatePresence>
-                    </div>
+                    </motion.div>
                   ) : (
-                    <Link
+                    <motion.div
                       key={link.href}
-                      href={link.href!}
-                      prefetch
-                      onClick={() => setIsOpen(false)}
-                      className={`${linkClass(link.href!)} ${navFocus}`}
+                      initial={{ opacity: 0, x: -12 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.05, duration: 0.35, ease: EASE_OUT }}
                     >
-                      {link.label}
-                    </Link>
+                      <Link
+                        href={link.href!}
+                        prefetch
+                        onClick={() => setIsOpen(false)}
+                        className={`${linkClass(link.href!)} ${navFocus}`}
+                      >
+                        {link.label}
+                      </Link>
+                    </motion.div>
                   );
                 })}
-              </div>
 
-              <div className="border-t border-pupa-brown/10 px-5 py-5">
-                <div className="mb-5 flex gap-5">
-                  {SITE_SOCIAL.map(({ href, label }) => {
-                    const Icon =
-                      label === "Instagram"
-                        ? Instagram
-                        : label === "Twitter"
-                          ? Twitter
-                          : Facebook;
-                    return (
-                      <a
-                        key={href}
-                        href={href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={label}
-                        className={navFocus}
-                      >
-                        <Icon size={20} className="text-pupa-brown/70 hover:text-pupa-accent" />
-                      </a>
-                    );
-                  })}
-                </div>
-                <Link
-                  href="/#reservation"
-                  onClick={() => setIsOpen(false)}
-                  className="block w-full py-3.5 text-center font-sans text-xs tracking-widest uppercase bg-pupa-brown text-pupa-cream hover:bg-pupa-accent transition-colors"
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.25 }}
+                  className="flex gap-5 pt-4 mt-2 border-t border-pupa-brown/10"
                 >
-                  Reserve a Table
-                </Link>
+                  <a href="https://www.instagram.com/pupa.restaurant.bar" target="_blank" rel="noopener noreferrer" className={navFocus}>
+                    <Instagram size={20} className="text-pupa-brown/70 hover:text-pupa-accent" />
+                  </a>
+                  <a href="https://twitter.com/PupaRestaurant" target="_blank" rel="noopener noreferrer" className={navFocus}>
+                    <Twitter size={20} className="text-pupa-brown/70 hover:text-pupa-accent" />
+                  </a>
+                  <a href="https://www.facebook.com/pupa.restaurant" target="_blank" rel="noopener noreferrer" className={navFocus}>
+                    <Facebook size={20} className="text-pupa-brown/70 hover:text-pupa-accent" />
+                  </a>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="mt-5"
+                >
+                  <Link
+                    href="/#reservation"
+                    onClick={() => setIsOpen(false)}
+                    className="block w-full text-center py-3.5 bg-pupa-brown text-pupa-cream font-sans text-xs tracking-widest uppercase hover:bg-pupa-accent transition-colors"
+                  >
+                    Reserve a Table
+                  </Link>
+                </motion.div>
               </div>
-            </motion.aside>
-          </>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+          </nav>
+        </div>
+      </motion.header>
       {/* Spacer so page content starts below the fixed header */}
       <div style={{ height: headerHeight }} aria-hidden="true" />
     </>

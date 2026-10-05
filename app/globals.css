@@ -11,6 +11,8 @@
   --pupa-warm: #7a6352;
   --pupa-accent: #8f6b45;
   --pupa-champagne: #e8d4b8;
+  /* Navbar e vendos vlerën reale; kjo mban hero-n para se JS të matë header-in. */
+  --site-header: 5.25rem;
 }
 
 * {
@@ -57,6 +59,36 @@ button:focus:not(:focus-visible) {
 ::-webkit-scrollbar-thumb {
   background: var(--pupa-gold);
   border-radius: 3px;
+}
+
+/* Fade një herë. forwards e mban opacity: 1 — Framer Motion e hiqte shtresën në fund dhe kutia dukej sikur hynte përsëri. */
+@keyframes hero-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.hero-fade-in {
+  opacity: 0;
+  animation: hero-fade-in 0.65s cubic-bezier(0.22, 0.61, 0.36, 1) 0.55s forwards;
+}
+
+.hero-fade-in-copy {
+  animation-delay: 0.32s;
+}
+
+.hero-fade-in-menu {
+  animation-delay: 0.4s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-fade-in {
+    opacity: 1;
+    animation: none;
+  }
 }
 
 @layer utilities {

@@ -30,7 +30,7 @@ export default function About() {
             </p>
             <h2 className="font-serif text-5xl md:text-6xl lg:text-7xl text-pupa-ink font-semibold leading-[1.05] mb-6">
               Fire, Flavour &<br />
-              Mediterranean Soul
+              <span className="italic font-semibold text-pupa-brown">Mediterranean Soul</span>
             </h2>
             <div className="w-16 h-px bg-pupa-gold mb-8" />
             <p className="font-sans text-pupa-ink/70 text-base md:text-lg leading-relaxed mb-6">
@@ -80,19 +80,31 @@ export default function About() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.9, delay: 0.2 }}
-            className="grid grid-cols-2 gap-3"
+            className="grid grid-cols-2 gap-3 items-start"
           >
             {inView ? (
               <>
-                <div className="relative aspect-[3/4] overflow-hidden rounded-xl ring-1 ring-pupa-gold/20 shadow-lg group">
-                  <Image
-                    src={images[0].url}
-                    alt={images[0].alt}
-                    fill
-                    loading="lazy"
-                    className="object-cover group-hover:scale-105 transition-transform duration-700"
-                    sizes="(max-width: 768px) 50vw, 25vw"
-                  />
+                <div className="flex flex-col gap-3">
+                  <div className="relative aspect-[3/4] overflow-hidden rounded-xl ring-1 ring-pupa-gold/20 shadow-lg group">
+                    <Image
+                      src={images[0].url}
+                      alt={images[0].alt}
+                      fill
+                      loading="lazy"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                    />
+                  </div>
+                  <div className="relative aspect-square overflow-hidden rounded-xl ring-1 ring-pupa-gold/20 shadow-lg group">
+                    <Image
+                      src={images[3].url}
+                      alt={images[3].alt}
+                      fill
+                      loading="lazy"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                    />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-3">
                   {images.slice(1, 3).map((img) => (
@@ -114,7 +126,10 @@ export default function About() {
               </>
             ) : (
               <>
-                <div className="aspect-[3/4] rounded-xl bg-pupa-warm/20 animate-pulse" />
+                <div className="flex flex-col gap-3">
+                  <div className="aspect-[3/4] rounded-xl bg-pupa-warm/20 animate-pulse" />
+                  <div className="aspect-square rounded-xl bg-pupa-warm/20 animate-pulse" />
+                </div>
                 <div className="flex flex-col gap-3">
                   <div className="aspect-square rounded-xl bg-pupa-warm/20 animate-pulse" />
                   <div className="aspect-square rounded-xl bg-pupa-warm/20 animate-pulse" />

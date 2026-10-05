@@ -6,6 +6,7 @@ export const SITE_IMAGES = {
   about1: "/images/about/about-1.jpg",
   about2: "/images/about/about-2.jpg",
   about3: "/images/about/about-3.jpg",
+  about4: "/images/about/about-4.jpg",
   menus: "/images/heroes/menus.jpg",
   mainMenu: "/images/heroes/main-menu.jpg",
   dessert: "/images/heroes/dessert.jpg",
@@ -22,6 +23,7 @@ export const ABOUT_IMAGES = [
   { key: "about_1", url: SITE_IMAGES.about1, alt: "Pupa Restaurant interior" },
   { key: "about_2", url: SITE_IMAGES.about2, alt: "Charcoal grill at Pupa" },
   { key: "about_3", url: SITE_IMAGES.about3, alt: "Mediterranean dining at Pupa" },
+  { key: "about_4", url: SITE_IMAGES.about4, alt: "Charcoal-grilled steak at Pupa" },
 ];
 
 export const SITE_CONTACT = {
