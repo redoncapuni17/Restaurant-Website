@@ -36,7 +36,7 @@ const menus = [
     description:
       "Sweet endings crafted with care and Mediterranean inspiration.",
     href: "/dessert-menu",
-    image: SITE_IMAGES.dessert,
+    image: "/images/menus/dessert-food.jpg",
   },
   {
     title: "Drink Menu",

@@ -12,7 +12,7 @@ export const SITE_IMAGES = {
   dessert: "/images/heroes/dessert.jpg",
   drink: "/images/heroes/drink.jpg",
   lunch: "/images/heroes/lunch.jpg",
-  wine: "/images/heroes/wine.jpg",
+  wine: "/images/menus/wine-glass.jpg",
   privateHire: "/images/heroes/private-hire.jpg",
   events: "/images/heroes/events.jpg",
   giftCardsHero: "/images/gift-cards/hero.jpg",

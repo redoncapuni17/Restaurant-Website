@@ -426,7 +426,7 @@ export default function Navbar() {
                   transition={{ delay: 0.25 }}
                   className="flex gap-5 pt-4 mt-2 border-t border-pupa-brown/10"
                 >
-                  <a href="https://www.instagram.com/pupa.restaurant.bar" target="_blank" rel="noopener noreferrer" className={navFocus}>
+                  <a href="https://www.instagram.com/pupa.restaurant" target="_blank" rel="noopener noreferrer" className={navFocus}>
                     <Instagram size={20} className="text-pupa-brown/70 hover:text-pupa-accent" />
                   </a>
                   <a href="https://twitter.com/PupaRestaurant" target="_blank" rel="noopener noreferrer" className={navFocus}>

@@ -46,7 +46,7 @@ export default function PrivateHireView() {
       </section>
 
       {/* Dining room + gallery */}
-      <section className="py-14 sm:py-20 bg-pupa-beige">
+      <section className="py-6 sm:py-6 bg-pupa-beige">
         <div className="max-w-6xl mx-auto px-5 sm:px-6">
           <FadeIn className="text-center mb-10 sm:mb-12 max-w-2xl mx-auto">
             <h2 className="font-serif text-3xl sm:text-4xl text-pupa-brown font-semibold mb-4">
