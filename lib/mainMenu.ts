@@ -55,7 +55,7 @@ export const STARTERS_SECTION: MainMenuSection = {
     {
       name: "Stuffed Croquettes",
       price: "7",
-      description: "Potato croquettes with bacon and mozzarella, served with garlic mayo.",
+      description: "Potato croquettes with mozzarella, cheddar & herbs, served with garlic mayo.",
     },
     {
       name: "Spicy Chicken Wings",
@@ -69,7 +69,7 @@ export const STARTERS_SECTION: MainMenuSection = {
       dietary: ["V"],
       favorite: true,
       description:
-        "Perfect for sharing (for 2). A selection of 3 dips — tzatziki, spicy tomato salsa and hummus — served with pitta bread.",
+        "Perfect for sharing (between 2). A selection of 3 dips — tzatziki, spicy tomato salsa and hummus — served with pitta bread.",
     },
   ],
 };
@@ -98,7 +98,7 @@ export const GRILL_SECTION: MainMenuSection = {
       name: "Mediterranean Meat Platter",
       price: "26",
       description:
-        "Signature marinated lamb and chicken skewers with Spanish chorizo. Served with salad garnish.",
+        "Signature marinated lamb and chicken skewers with beef sausage. Served with salad garnish.",
     },
     {
       name: "Lamb Supreme",
@@ -114,24 +114,23 @@ export const GRILL_SECTION: MainMenuSection = {
       description: "Chargrilled lamb cutlets covered in sage and rosemary cream sauce.",
     },
     {
-      name: "Pollo a la Crema",
+      name: "Pollo alla Crema Blu",
       price: "24",
       dietary: ["GF"],
       description:
-        "Marinated grilled chicken breast in white wine cream sauce with bacon and mushrooms.",
+        "Marinated grilled chicken breast in white wine cream sauce with blue cheese and mushrooms.",
     },
     {
-      name: "Pork Chops",
-      price: "20",
-      description:
-        "Juicy chops in honey and mustard marinade. Grilled over charcoal and served with salad garnish.",
+      name: "Beef Ragu Pasta",
+      price: "18",
+      description: "Slow-cooked beef ragu in rich, hearty tomato and herb sauce.",
     },
     {
-      name: "King Prawns",
+      name: "Grilled King Prawns",
       price: "20",
       dietary: ["GF"],
       description:
-        "Mediterranean king prawns, brushed with garlic butter. Served with salad garnish.",
+        "Mediterranean king prawns, brushed with garlic butter. Served with salad garnish — shell & head-on, butterflied.",
     },
     {
       name: "Grilled Sea Bass",
@@ -143,7 +142,7 @@ export const GRILL_SECTION: MainMenuSection = {
     },
     {
       name: "Falafel Plate",
-      price: "20",
+      price: "18",
       dietary: ["V"],
       note: "Vegan option available",
       description:
@@ -193,25 +192,25 @@ export const BURGERS_SECTION: MainMenuSection = {
   items: [
     {
       name: "Pupa Burger",
-      price: "22",
+      price: "20",
       favorite: true,
       description:
-        "Angus beef, bacon, lettuce, tomato, grilled pepper, cheese, mayo, homemade cheese sauce.",
+        "Angus beef, lettuce, tomato, grilled pepper, cheese, mayo, homemade cheese sauce.",
     },
     {
       name: "Whiskey Burger",
-      price: "22",
-      description: "Angus beef, bacon, lettuce, tomato, cheese, BBQ whiskey & onion sauce.",
+      price: "20",
+      description: "Angus beef, lettuce, tomato, cheese, BBQ whiskey & onion sauce.",
     },
     {
       name: "Chicken Burger",
-      price: "22",
+      price: "20",
       description:
         "Grilled chicken breast, sweet chilli, tomato, lettuce, cheese, mayo. Make it spicy with our signature spicy marinate.",
     },
     {
       name: "Halloumi Burger",
-      price: "22",
+      price: "20",
       dietary: ["V"],
       description: "Halloumi, mushroom, peppers, tomato, basil sauce, mayo, lettuce.",
     },
@@ -223,14 +222,14 @@ export const SHARING_SECTION: MainMenuSection = {
   eyebrow: "For the Table",
   title: "Sharing",
   intro: "Mediterranean cuisine is all about sharing, so why not try our sharing platters!",
-  note: "The meat feast is available in multiples of two only. With every feast, add 2 extra sides.",
+  note: "The grillhouse platter is available in multiples of two only. With every platter, add 2 extra sides.",
   items: [
     {
-      name: "Meat Feast for 2",
-      price: "56",
+      name: "Grillhouse Platter for 2",
+      price: "58",
       favorite: true,
       description:
-        "Tender chicken and lamb skewers, pork chops, chicken wings, and Spanish chorizo on a bed of salad. Served with a choice of 2 sides.",
+        "Tender chicken and lamb skewers, lamb chops, chicken wings, and beef sausage on a bed of salad. Served with a choice of 2 sides.",
     },
   ],
 };
@@ -300,4 +299,4 @@ export const MAIN_MENU_SECTIONS: MainMenuSection[] = [
 ];
 
 export const MAIN_MENU_FOOTER =
-  "(V) Vegetarian · (VG) Vegan · (GF) Gluten Free. If you have a food allergy or special dietary requirements, please inform a member of staff before ordering.";
+  "(V) Vegetarian · (VG) Vegan · (GF) Gluten Free. All meat is halal. If you have a food allergy or special dietary requirements, please inform a member of staff before ordering.";
