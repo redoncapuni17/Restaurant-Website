@@ -87,9 +87,15 @@ function CatalogItemRow({
   item: CatalogItem;
   dual?: boolean;
 }) {
+  const showPrice = dual || Boolean(item.price);
+
   return (
     <li className="py-3.5 border-b border-pupa-brown/10 last:border-0">
-      <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-3">
+      <div
+        className={
+          showPrice ? "grid grid-cols-[minmax(0,1fr)_auto] gap-3" : undefined
+        }
+      >
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
             <p className="font-serif text-pupa-brown text-xl sm:text-2xl leading-snug">
@@ -128,22 +134,33 @@ function CatalogItemRow({
               {formatPrice(item.priceSecondary)}
             </span>
           </div>
-        ) : (
+        ) : item.price ? (
           <p className="font-sans text-base sm:text-lg tabular-nums font-medium text-pupa-brown shrink-0 self-start pt-0.5">
             {formatPrice(item.price)}
           </p>
-        )}
+        ) : null}
       </div>
     </li>
   );
 }
 
-function CatalogCardView({ card, index }: { card: CatalogCard; index: number }) {
+function CatalogCardView({
+  card,
+  index,
+  anchorId,
+}: {
+  card: CatalogCard;
+  index: number;
+  anchorId?: string;
+}) {
   const dual = Boolean(card.dualPriceHeaders);
 
   return (
     <FadeIn delay={index * 0.06} className="h-full">
-      <article className="h-full bg-[#FBF4EA] border border-pupa-brown/10 rounded-xl shadow-[0_8px_28px_rgba(61,42,31,0.06)] p-5 sm:p-7">
+      <article
+        id={anchorId}
+        className="h-full scroll-mt-[calc(var(--site-header)+1.25rem)] bg-[#FBF4EA] border border-pupa-brown/10 rounded-xl shadow-[0_8px_28px_rgba(61,42,31,0.06)] p-5 sm:p-7"
+      >
         <div className="flex items-start justify-between gap-3 mb-4 sm:mb-5">
           <div>
             <h2 className="font-serif text-2xl sm:text-3xl text-[#6B2E2E] font-medium tracking-wide">
@@ -192,12 +209,25 @@ export function MenuCatalogShell({
   cards,
   footer,
   navLabel = "Menu categories",
+  intro,
+  scrollToSection = false,
 }: {
   cards: CatalogCard[];
   footer?: string;
   navLabel?: string;
+  intro?: ReactNode;
+  scrollToSection?: boolean;
 }) {
   const [active, setActive] = useState(cards[0]?.id ?? "");
+
+  const jumpTo = (id: string) => {
+    setActive(id);
+    if (!scrollToSection) return;
+    document.getElementById(`menu-course-${id}`)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   return (
     <section className="relative bg-[#F3E0C8] overflow-hidden">
@@ -205,6 +235,10 @@ export function MenuCatalogShell({
       <VineDecoration side="right" />
 
       <div className="relative max-w-6xl mx-auto px-5 sm:px-6 pt-10 sm:pt-14 pb-16 sm:pb-24">
+        {intro && (
+          <FadeIn className="mb-8 sm:mb-10">{intro}</FadeIn>
+        )}
+
         <FadeIn>
           <nav
             aria-label={navLabel}
@@ -216,7 +250,7 @@ export function MenuCatalogShell({
                 <button
                   key={card.id}
                   type="button"
-                  onClick={() => setActive(card.id)}
+                  onClick={() => jumpTo(card.id)}
                   className={`inline-flex items-center justify-center px-5 sm:px-7 py-2.5 sm:py-3 rounded-full font-sans text-sm tracking-[0.22em] uppercase transition-colors duration-300 ${
                     isActive
                       ? "bg-[#6B2E2E] text-pupa-cream shadow-sm"
@@ -232,7 +266,12 @@ export function MenuCatalogShell({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 lg:gap-7">
           {cards.map((card, i) => (
-            <CatalogCardView key={card.id} card={card} index={i} />
+            <CatalogCardView
+              key={card.id}
+              card={card}
+              index={i}
+              anchorId={scrollToSection ? `menu-course-${card.id}` : undefined}
+            />
           ))}
         </div>
 

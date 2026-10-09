@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { EASE_OUT } from "@/components/motion/constants";
@@ -157,15 +158,25 @@ export default function Gallery() {
             Gallery
           </h2>
           <div className="w-16 h-px bg-pupa-gold mx-auto md:mx-0 mb-4" />
-          <motion.p
-            key={displayed.length}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: EASE_OUT }}
-            className="font-sans text-pupa-warm/60 text-sm sm:text-base"
-          >
-            Showing {displayed.length} of {GALLERY_TOTAL} photos
-          </motion.p>
+          <div className="flex flex-wrap items-center justify-center md:justify-between gap-x-5 gap-y-3 w-full">
+            <motion.p
+              key={displayed.length}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, ease: EASE_OUT }}
+              className="font-sans text-pupa-warm/60 text-sm sm:text-base"
+            >
+              Showing {displayed.length} of {GALLERY_TOTAL} photos
+            </motion.p>
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Link
+                href="/gallery"
+                className="inline-block px-5 py-2.5 bg-pupa-cream text-pupa-dark font-sans text-xs tracking-[0.2em] uppercase rounded-sm hover:bg-pupa-gold transition-colors duration-300"
+              >
+                View all gallery
+              </Link>
+            </motion.div>
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">

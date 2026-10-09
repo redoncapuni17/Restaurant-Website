@@ -32,6 +32,14 @@ const menus = [
     image: SITE_IMAGES.mainMenu,
   },
   {
+    title: "Festive Menu",
+    description:
+      "The full sharing menu — every starter, main and dessert. Minimum 10 guests.",
+    href: "/festive-menu",
+    image: "/images/gallery/027.jpg",
+    isNew: true,
+  },
+  {
     title: "Dessert Menu",
     description:
       "Sweet endings crafted with care and Mediterranean inspiration.",
@@ -78,12 +86,14 @@ function MenuCard({
   href,
   image,
   index,
+  isNew = false,
 }: {
   title: string;
   description: string;
   href: string;
   image: string;
   index: number;
+  isNew?: boolean;
 }) {
   return (
     <motion.div
@@ -108,8 +118,13 @@ function MenuCard({
         </div>
 
         <div className="min-w-0 flex-1 pr-1">
-          <h2 className="font-serif text-pupa-brown text-2xl sm:text-3xl font-semibold mb-1 group-hover:text-pupa-accent transition-colors">
+          <h2 className="flex flex-wrap items-center gap-x-2.5 gap-y-1 font-serif text-pupa-brown text-2xl sm:text-3xl font-semibold mb-1 group-hover:text-pupa-accent transition-colors">
             {title}
+            {isNew && (
+              <span className="inline-flex items-center rounded-sm bg-[#6B2E2E] px-1.5 py-1 font-sans text-[10px] font-medium uppercase leading-none tracking-[0.14em] text-pupa-cream">
+                New
+              </span>
+            )}
           </h2>
           <p className="font-sans text-pupa-warm text-base leading-relaxed line-clamp-2">
             {description}
@@ -128,9 +143,6 @@ function MenuCard({
 }
 
 export default function MenusView() {
-  const topMenus = menus.slice(0, 4);
-  const lastMenu = menus[4];
-
   return (
     <>
       <PageHero
@@ -156,15 +168,9 @@ export default function MenusView() {
           </FadeIn>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-            {topMenus.map((menu, i) => (
+            {menus.map((menu, i) => (
               <MenuCard key={menu.title} {...menu} index={i} />
             ))}
-          </div>
-
-          <div className="mt-4 sm:mt-5 flex justify-center">
-            <div className="w-full sm:w-[calc(50%-0.625rem)]">
-              <MenuCard {...lastMenu} index={4} />
-            </div>
           </div>
 
           <FadeIn className="mt-8 sm:mt-10" delay={0.15}>

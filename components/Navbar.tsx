@@ -17,6 +17,7 @@ const navLinks = [
       { href: "/wine-list", label: "Wine List" },
       { href: "/lunch-menu", label: "Lunch Menu" },
       { href: "/main-menu", label: "Main Menu" },
+      { href: "/festive-menu", label: "Festive Menu", isNew: true },
       { href: "/dessert-menu", label: "Dessert Menu" },
       { href: "/drink-menu", label: "Drink Menu" },
     ],
@@ -25,6 +26,14 @@ const navLinks = [
   { href: "/events", label: "Events" },
   { href: "/gift-cards", label: "Gift Cards" },
 ];
+
+function NewBadge() {
+  return (
+    <span className="inline-flex items-center rounded-sm bg-[#6B2E2E] px-1.5 py-0.5 font-sans text-[10px] font-medium uppercase leading-none tracking-[0.14em] text-pupa-cream">
+      New
+    </span>
+  );
+}
 
 function isLinkActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
@@ -227,7 +236,7 @@ export default function Navbar() {
                     id="menus-dropdown"
                     role="menu"
                     aria-labelledby="menus-trigger"
-                    className={`absolute top-full left-0 pt-3 w-48 transition-all duration-200 ease-out ${
+                    className={`absolute top-full left-0 pt-3 w-56 transition-all duration-200 ease-out ${
                       desktopMenusOpen
                         ? "opacity-100 visible translate-y-0 pointer-events-auto"
                         : "opacity-0 invisible translate-y-1 pointer-events-none"
@@ -244,13 +253,14 @@ export default function Navbar() {
                             prefetch
                             tabIndex={desktopMenusOpen ? 0 : -1}
                             onClick={() => setDesktopMenusOpen(false)}
-                            className={`block px-4 py-2.5 text-base font-sans transition-colors duration-200 ${
+                            className={`flex items-center justify-between gap-3 px-4 py-2.5 text-base font-sans transition-colors duration-200 ${
                               childActive
                                 ? "bg-pupa-beige text-pupa-accent"
                                 : "text-pupa-brown/80 hover:bg-pupa-beige hover:text-pupa-accent"
                             }`}
                           >
                             {child.label}
+                            {child.isNew && <NewBadge />}
                           </Link>
                         );
                       })}
@@ -326,17 +336,36 @@ export default function Navbar() {
             </button>
           </div>
         </div>
+          </nav>
+        </div>
+      </motion.header>
 
-        <AnimatePresence>
-          {isOpen && (
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            key="mobile-nav"
+            className="lg:hidden fixed inset-x-0 bottom-0 z-40"
+            style={{ top: headerHeight }}
+            initial="closed"
+            animate="open"
+            exit="closed"
+            variants={{ open: {}, closed: {} }}
+          >
+            <button
+              type="button"
+              aria-label="Close menu"
+              onClick={() => setIsOpen(false)}
+              className="absolute inset-0 border-0 p-0 cursor-pointer bg-pupa-dark/25 backdrop-blur-md"
+            />
             <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.35, ease: EASE_OUT }}
-              className="lg:hidden overflow-hidden bg-pupa-beige border-t border-pupa-brown/10"
+              variants={{
+                closed: { x: "100%" },
+                open: { x: 0 },
+              }}
+              transition={{ duration: 0.32, ease: EASE_OUT }}
+              className="absolute inset-y-0 right-0 left-[22%] overflow-y-auto overscroll-contain bg-pupa-beige border-l border-pupa-brown/10 shadow-[-18px_0_40px_rgba(61,42,31,0.12)]"
             >
-              <div className="px-4 sm:px-6 py-2 pb-6 flex flex-col">
+            <div className="px-4 sm:px-6 py-2 pb-8 flex flex-col">
                 {navLinks.map((link, i) => {
                   const menusActive =
                     Boolean(link.children) && isMenusActive(pathname);
@@ -386,13 +415,14 @@ export default function Navbar() {
                                     href={child.href}
                                     prefetch
                                     onClick={() => setIsOpen(false)}
-                                    className={`py-2.5 text-base ${
+                                    className={`flex items-center justify-between gap-3 py-2.5 text-base ${
                                       childActive
                                         ? "text-pupa-accent font-medium"
                                         : "text-pupa-brown/60 hover:text-pupa-accent"
                                     } ${navFocus}`}
                                   >
                                     {child.label}
+                                    {child.isNew && <NewBadge />}
                                   </Link>
                                 );
                               })}
@@ -453,11 +483,9 @@ export default function Navbar() {
                 </motion.div>
               </div>
             </motion.div>
-          )}
-        </AnimatePresence>
-          </nav>
-        </div>
-      </motion.header>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* Spacer so page content starts below the fixed header */}
       <div style={{ height: headerHeight }} aria-hidden="true" />
     </>

@@ -94,7 +94,7 @@ export default function PageHero({
         {subtitle && (
           <motion.p
             {...fade(0.45, 12)}
-            className="font-sans text-pupa-warm text-base sm:text-lg leading-relaxed mb-6 sm:mb-8 text-balance"
+            className="font-sans text-pupa-cream text-base sm:text-lg leading-relaxed mb-6 sm:mb-8 text-balance"
           >
             {subtitle}
           </motion.p>

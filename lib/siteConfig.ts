@@ -20,10 +20,10 @@ export const SITE_IMAGES = {
 } as const;
 
 export const ABOUT_IMAGES = [
-  { key: "about_1", url: SITE_IMAGES.about1, alt: "Pupa Restaurant interior" },
-  { key: "about_2", url: SITE_IMAGES.about2, alt: "Charcoal grill at Pupa" },
-  { key: "about_3", url: SITE_IMAGES.about3, alt: "Mediterranean dining at Pupa" },
-  { key: "about_4", url: SITE_IMAGES.about4, alt: "Charcoal-grilled steak at Pupa" },
+  { key: "about_2", url: SITE_IMAGES.about2, alt: "Tomahawk steaks on the charcoal grill" },
+  { key: "about_1", url: SITE_IMAGES.about1, alt: "Candlelit stairs at Pupa" },
+  { key: "about_3", url: SITE_IMAGES.about3, alt: "Desserts at Pupa" },
+  { key: "about_4", url: SITE_IMAGES.about4, alt: "Mediterranean sharing platter at Pupa" },
 ];
 
 export const SITE_CONTACT = {
