@@ -60,7 +60,7 @@ export default function Hero() {
               animate="visible"
               className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-pupa-cream font-semibold leading-[0.92] tracking-[-0.02em] [text-shadow:0_3px_28px_rgba(26,20,16,0.6)]"
             >
-              Pupa
+              PUPA
               <br />
               <span className="relative mt-1 inline-block italic font-medium tracking-normal text-pupa-champagne pr-2 [text-shadow:0_2px_18px_rgba(26,20,16,0.55)]">
                 Restaurant

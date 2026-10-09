@@ -98,11 +98,11 @@ export default function EventsView({ events, heroUrl }: EventsViewProps) {
                         Calendar
                       </p>
                       <h2 className="font-serif text-2xl sm:text-3xl text-pupa-brown font-semibold">
-                        More to look forward to
+                        More events
                       </h2>
                     </div>
                     <p className="hidden sm:block font-sans text-pupa-brown/40 text-sm tracking-wider uppercase">
-                      {rest.length} upcoming
+                      {rest.length} events
                     </p>
                   </FadeIn>
 

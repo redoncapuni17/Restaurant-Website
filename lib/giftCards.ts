@@ -18,7 +18,7 @@ export const GIFT_CARD_CONTENT = {
 export const GIFT_CARD_PERKS = [
   "Food & drink",
   "A card to hand over",
-  "Valid 12 months",
+  "Valid 6 months",
   "Birthdays & thank-yous",
 ];
 
